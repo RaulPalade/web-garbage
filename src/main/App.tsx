@@ -10,9 +10,13 @@ import { DashboardView } from "../presentation/DashboardView";
 import { NotFoundView } from "../presentation/NotFoundView";
 import { PrivateRoute } from "../presentation/auth/PrivateRoute";
 import { SignInView } from "../presentation/auth/SignInView";
+import { BusinessDataSourceImpl } from "../data/datasource/BusinessDataSourceImpl";
+import { BusinessRepositoryImpl } from "../data/repository/BusinessRepositoryImpl";
 
 const authDataSource = new AuthDataSourceImpl();
 const authRepository = new AuthRepositoryImpl(authDataSource);
+const businessDataSource = new BusinessDataSourceImpl();
+const businessRepository = new BusinessRepositoryImpl(businessDataSource);
 
 function App() {
   return (
@@ -26,8 +30,13 @@ function App() {
           />
           <Route path="/" element={<PrivateRoute />}>
             <Route
-              path="/dashboard"
-              element={<DashboardView authRepository={authRepository} />}
+              path="/"
+              element={
+                <DashboardView
+                  authRepository={authRepository}
+                  businessRepository={businessRepository}
+                />
+              }
             />
           </Route>
         </Routes>

@@ -4,8 +4,8 @@ export type Business = {
   street: string;
   city: string;
   website: string;
-  reviews: string;
-  score: string;
+  reviews: number;
+  score: number;
   phone: string;
   category: string;
   urlMap: string;
