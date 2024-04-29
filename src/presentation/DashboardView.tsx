@@ -12,8 +12,6 @@ import { useBusinessModelController } from "./hooks/useBusinessModelController";
 import { BusinessRepository } from "../domain/repository/BusinessRepository";
 import { Business, NewBusiness } from "../domain/models";
 import { toast } from "react-toastify";
-import { LoaderView } from "./components/LoaderView";
-import { CircularLoaderComponent } from "./components/CircularLoaderComponent";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -155,14 +153,14 @@ export function DashboardView({
               onChange={handleUploadJson}
               accept=".json"
             />
-            Upload Csv
+            Upload JSON
           </label>
         </div>
         <ul className="divide-y divide-gray-100">
           {currentBusinesses.map((business) => (
             <li
               key={business.id}
-              className="flex justify-between gap-x-6 py-5 px-4 cursor-pointer transition-all duration-300 hover:bg-palette-light"
+              className="flex justify-between gap-x-6 py-4 px-4 cursor-pointer transition-all duration-300 hover:bg-palette-lighter"
               onClick={() => navigateToBusiness(business)}
             >
               <div className="flex min-w-0 gap-x-4">
