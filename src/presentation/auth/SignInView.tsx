@@ -36,7 +36,7 @@ export function SignInView({
       const result = await handleSignIn(formData.email, formData.password);
       if (result) {
         showSuccessToast("Accesso eseguito");
-        navigate("/dashboard");
+        navigate("/");
       } else {
         showErrorToast(
           "Qualcosa è andato storto. Ti preghiamo di riprovare più tardi."

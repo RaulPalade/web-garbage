@@ -8,4 +8,6 @@ export type NewBusiness = {
   phone: string;
   category: string;
   urlMap: string;
+  notes: string;
+  contacted: boolean;
 };

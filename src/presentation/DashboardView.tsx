@@ -29,7 +29,7 @@ export function DashboardView({
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState<boolean>(false);
-  const itemsPerPage = 5;
+  const itemsPerPage = 8;
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const { handleGetAllBusinesses, handleAddBusinesses } =
@@ -50,7 +50,7 @@ export function DashboardView({
   };
 
   const navigateToBusiness = (business: Business) => {
-    navigate(`/dashboard/businesses/${business.id}`, { state: { business } });
+    navigate(`/businesses/${business.id}`, { state: { business } });
   };
 
   const handleUploadJson = async () => {
@@ -65,7 +65,7 @@ export function DashboardView({
 
       setLoading(true);
       await handleAddBusinesses(dataToAdd);
-      //refreshTable();
+      loadBusinesses();
       fileInput.value = "";
       setLoading(false);
       toast.success("JSON Uploaded");
@@ -117,6 +117,8 @@ export function DashboardView({
         category: item["categoryName"] || "Non disponibile",
         phone: item["phone"] || "Non disponibile",
         urlMap: item["url"] || "Non disponibile",
+        notes: "",
+        contacted: false,
       };
       dataToAdd.push(newBusiness);
     });
@@ -131,10 +133,6 @@ export function DashboardView({
   const removeHttpAndWww = (url: string) => {
     return url.replace(/^(https?:\/\/)?(www\.)?/i, "").replace(/\/$/, "");
   };
-
-  // if (loading) {
-  //   return <CircularLoaderComponent />;
-  // }
 
   return (
     <div className="w-full min-h-full">

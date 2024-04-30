@@ -8,11 +8,7 @@ import { useAuthModelController } from "../hooks/useAuthModelController";
 import logo from "../../images/garbage.svg";
 
 const navigation = {
-  pages: [
-    { name: "Catalogo", href: "/dashboard" },
-    { name: "Preventivi in attesa", href: "/dashboard/pendingQuotes" },
-    { name: "Preventivi inviati", href: "/dashboard/sendedQuotes" },
-  ],
+  pages: [{ name: "Catalogo", href: "/" }],
 };
 
 export function HeaderComponent({
@@ -117,7 +113,7 @@ export function HeaderComponent({
 
               {/* Logo */}
               <div className="ml-4 flex lg:ml-0">
-                <a href="/dashboard">
+                <a href="/">
                   <span className="sr-only">Your Company</span>
                   <img src={logo} className="h-8 w-auto" alt="logo" />
                 </a>

@@ -30,6 +30,8 @@ export class BusinessRepositoryImpl implements BusinessRepository {
           phone: businessData.phone,
           category: businessData.category,
           urlMap: businessData.urlMap,
+          notes: businessData.notes,
+          contacted: businessData.contacted,
         };
         businesses.push(business);
       });

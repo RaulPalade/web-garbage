@@ -15,10 +15,10 @@ module.exports = {
       }),
       colors: {
         palette: {
-          lighter: "#B3D4FF",
-          light: "#66A3FF",
-          primary: "#0047B3",
-          dark: "#002E80",
+          lighter: "#EADDFF",
+          light: "#D0BCFF",
+          primary: "#4F378B",
+          dark: "#21005D",
         },
       },
       fontFamily: {

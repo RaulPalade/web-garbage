@@ -41,7 +41,7 @@ function App() {
             />
           </Route>
           <Route
-            path="/dashboard/businesses/:businessId"
+            path="/businesses/:businessId"
             element={
               <BusinessDetailView
                 authRepository={authRepository}
