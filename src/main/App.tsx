@@ -12,6 +12,7 @@ import { PrivateRoute } from "../presentation/auth/PrivateRoute";
 import { SignInView } from "../presentation/auth/SignInView";
 import { BusinessDataSourceImpl } from "../data/datasource/BusinessDataSourceImpl";
 import { BusinessRepositoryImpl } from "../data/repository/BusinessRepositoryImpl";
+import { BusinessDetailView } from "../presentation/BusinessDetailView";
 
 const authDataSource = new AuthDataSourceImpl();
 const authRepository = new AuthRepositoryImpl(authDataSource);
@@ -39,6 +40,15 @@ function App() {
               }
             />
           </Route>
+          <Route
+            path="/dashboard/businesses/:businessId"
+            element={
+              <BusinessDetailView
+                authRepository={authRepository}
+                businessRepository={businessRepository}
+              />
+            }
+          />
         </Routes>
         <ToastContainer autoClose={3000} />
       </>
