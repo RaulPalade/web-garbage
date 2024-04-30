@@ -18,6 +18,9 @@ export function BusinessDetailView({
   const location = useLocation();
   const business: Business = location.state.business;
 
+  const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+  const mapId = process.env.REACT_APP_GOOGLE_MAPS_ID_KEY;
+
   const [position, setPosition] = useState({ lat: 0, lng: 0 });
 
   useEffect(() => {
@@ -27,7 +30,7 @@ export function BusinessDetailView({
         const response = await fetch(
           `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
             address
-          )}&key=AIzaSyDfY_ZZPlez7DjkTKzLe-obMkhyv9ePJ6g`
+          )}&key=${apiKey}`
         );
         const data = await response.json();
         const { lat, lng } = data.results[0].geometry.location;
@@ -38,7 +41,7 @@ export function BusinessDetailView({
     }
 
     fetchGeocode();
-  }, [business.street]);
+  }, [business, apiKey, mapId]);
 
   return (
     <div className="w-full min-h-full">
@@ -87,16 +90,18 @@ export function BusinessDetailView({
             </div>
           </dl>
         </div>
-        <APIProvider apiKey={"AIzaSyDfY_ZZPlez7DjkTKzLe-obMkhyv9ePJ6g"}>
-          <Map
-            style={{ height: "400px" }}
-            defaultZoom={14}
-            center={position}
-            mapId={"8c1f77b4d4874253"}
-          >
-            <AdvancedMarker position={position} />
-          </Map>
-        </APIProvider>
+        {apiKey && mapId && (
+          <APIProvider apiKey={apiKey}>
+            <Map
+              style={{ height: "400px" }}
+              defaultZoom={14}
+              center={position}
+              mapId={mapId}
+            >
+              <AdvancedMarker position={position} />
+            </Map>
+          </APIProvider>
+        )}
       </div>
       <FooterComponent />
     </div>
