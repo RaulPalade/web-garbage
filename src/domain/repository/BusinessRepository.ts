@@ -5,6 +5,9 @@ import { NewBusiness } from "../models/NewBusiness";
 export interface BusinessRepository {
   addBusinesses(businesses: NewBusiness[]): Promise<Result<boolean>>;
   deleteBusiness(businessId: string): Promise<Result<boolean>>;
-  updateBusiness(business: Business): Promise<Result<boolean>>;
+  updateBusiness(
+    businessId: string,
+    business: NewBusiness
+  ): Promise<Result<boolean>>;
   getAllBusinesses(): Promise<Result<Business[]>>;
 }

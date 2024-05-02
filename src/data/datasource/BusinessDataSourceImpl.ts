@@ -14,13 +14,11 @@ import {
   collection,
   deleteDoc,
   doc,
-  documentId,
   getDocs,
   query,
   updateDoc,
   where,
 } from "firebase/firestore";
-import { Business } from "../../domain/models";
 
 export class BusinessDataSourceImpl implements BusinessDataSource {
   businessesRef = collection(db, "businesses");
@@ -62,16 +60,19 @@ export class BusinessDataSourceImpl implements BusinessDataSource {
     }
   }
 
-  async updateBusiness(business: Business): Promise<ApiResponse<boolean>> {
+  async updateBusiness(
+    businessId: string,
+    business: NewBusiness
+  ): Promise<ApiResponse<boolean>> {
     try {
-      const documentRef = doc(this.businessesRef, business.id);
+      const documentRef = doc(this.businessesRef, businessId);
       await updateDoc(documentRef, business);
-      const q = query(this.businessesRef, where("__name__", "==", documentId));
+      const q = query(this.businessesRef, where("__name__", "==", businessId));
       const querySnapshot = await getDocs(q);
 
       if (this.cachedBusinesses) {
         const index = this.cachedBusinesses.findIndex(
-          (item) => item.id === business.id
+          (item) => item.id === businessId
         );
         if (index !== -1) {
           this.cachedBusinesses[index] = querySnapshot.docs[0];
@@ -82,6 +83,7 @@ export class BusinessDataSourceImpl implements BusinessDataSource {
 
       return new ResponseSuccess(true);
     } catch (e) {
+      console.log(e);
       return new ResponseFailure("Something went wrong");
     }
   }

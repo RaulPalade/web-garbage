@@ -7,6 +7,8 @@ import { HeaderComponent } from "./components/HeaderComponent";
 import { PencilSquareIcon, StarIcon } from "@heroicons/react/24/outline";
 import { APIProvider, AdvancedMarker, Map } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
+import { useBusinessModelController } from "./hooks/useBusinessModelController";
+import { showErrorToast, showSuccessToast } from "../utils/toastUtils";
 
 export function BusinessDetailView({
   authRepository,
@@ -24,6 +26,9 @@ export function BusinessDetailView({
   const [position, setPosition] = useState({ lat: 0, lng: 0 });
   const [addNote, setAddNote] = useState<boolean>(false);
   const [description, setDescription] = useState<string>(business.notes);
+
+  const { handleUpdateBusiness } =
+    useBusinessModelController(businessRepository);
 
   useEffect(() => {
     async function fetchGeocode() {
@@ -44,6 +49,28 @@ export function BusinessDetailView({
 
     fetchGeocode();
   }, [business, apiKey, mapId]);
+
+  const handleEditBusiness = async () => {
+    const updatedBusiness = {
+      ...business,
+      notes: description.replace(/\n/g, "\\n"),
+    };
+
+    try {
+      const updateResponse = await handleUpdateBusiness(
+        business.id,
+        updatedBusiness
+      );
+      if (updateResponse) {
+        showSuccessToast("Modifica effettuata");
+        setAddNote(false);
+      } else {
+        showErrorToast("Errore");
+      }
+    } catch (error) {
+      showErrorToast("Errore");
+    }
+  };
 
   return (
     <div className="w-full min-h-full">
@@ -120,9 +147,15 @@ export function BusinessDetailView({
                       onChange={(e) => setDescription(e.target.value)}
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:bg-palette-lighter sm:text-sm sm:leading-6"
                     />
-                    <div className="mt-2">
+                    <div className="flex space-x-2 mt-2">
                       <button
                         onClick={() => setAddNote(false)}
+                        className="flex w-full items-center justify-center rounded-md border border-transparent bg-red-900 hover:bg-palette-dark px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:bg-palette-dark focus:ring-offset-2"
+                      >
+                        Annulla
+                      </button>
+                      <button
+                        onClick={handleEditBusiness}
                         className="flex w-full items-center justify-center rounded-md border border-transparent bg-palette-primary hover:bg-palette-dark px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:bg-palette-dark focus:ring-offset-2"
                       >
                         Salva
@@ -132,9 +165,16 @@ export function BusinessDetailView({
                 </dd>
               ) : (
                 <dd className="flex mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 items-center">
-                  <p className="mr-2">
-                    {business.notes === "" ? "Nessuna nota" : business.notes}
-                  </p>
+                  <div>
+                    {description === "" ? (
+                      <p>Nessuna nota</p>
+                    ) : (
+                      description
+                        .split("\n")
+                        .map((line, index) => <p key={index}>{line}</p>)
+                    )}
+                  </div>
+
                   <button
                     onClick={() => setAddNote(true)}
                     className="ml-auto border border-palette-primary hover:bg-palette-lighter rounded-lg py-1 px-2"

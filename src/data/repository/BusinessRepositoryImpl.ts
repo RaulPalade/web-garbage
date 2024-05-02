@@ -95,8 +95,14 @@ export class BusinessRepositoryImpl implements BusinessRepository {
     }
   }
 
-  async updateBusiness(business: Business): Promise<Result<boolean>> {
-    const updateResponse = await this.dataSource.updateBusiness(business);
+  async updateBusiness(
+    businessId: string,
+    business: NewBusiness
+  ): Promise<Result<boolean>> {
+    const updateResponse = await this.dataSource.updateBusiness(
+      businessId,
+      business
+    );
     if (updateResponse instanceof ResponseSuccess) {
       return new Success(true);
     } else {
