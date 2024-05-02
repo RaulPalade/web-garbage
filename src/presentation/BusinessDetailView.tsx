@@ -25,7 +25,9 @@ export function BusinessDetailView({
 
   const [position, setPosition] = useState({ lat: 0, lng: 0 });
   const [addNote, setAddNote] = useState<boolean>(false);
-  const [description, setDescription] = useState<string>(business.notes);
+  const [description, setDescription] = useState<string>(
+    business.notes.replace(/\\n/g, "\n")
+  );
 
   const { handleUpdateBusiness } =
     useBusinessModelController(businessRepository);
