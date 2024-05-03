@@ -28,6 +28,7 @@ export function BusinessDetailView({
   const [description, setDescription] = useState<string>(
     business.notes.replace(/\\n/g, "\n")
   );
+  const [contacted, setContacted] = useState<boolean>(business.contacted);
 
   const { handleUpdateBusiness } =
     useBusinessModelController(businessRepository);
@@ -52,26 +53,51 @@ export function BusinessDetailView({
     fetchGeocode();
   }, [business, apiKey, mapId]);
 
-  const handleEditBusiness = async () => {
-    const updatedBusiness = {
-      ...business,
-      notes: description.replace(/\n/g, "\\n"),
-    };
-
+  const handleUpdate = async (
+    id: string,
+    updatedBusiness: Partial<Business>,
+    successMessage: string,
+    errorMessage: string
+  ) => {
     try {
       const updateResponse = await handleUpdateBusiness(
-        business.id,
-        updatedBusiness
+        id,
+        updatedBusiness as Business
       );
       if (updateResponse) {
-        showSuccessToast("Modifica effettuata");
-        setAddNote(false);
+        showSuccessToast(successMessage);
       } else {
-        showErrorToast("Errore");
+        showErrorToast(errorMessage);
       }
     } catch (error) {
-      showErrorToast("Errore");
+      showErrorToast(errorMessage);
     }
+  };
+
+  const handleEditBusiness = async () => {
+    const updatedBusiness: Partial<Business> = {
+      notes: description.replace(/\n/g, "\\n"),
+    };
+    await handleUpdate(
+      business.id,
+      updatedBusiness,
+      "Modifica effettuata",
+      "Errore"
+    );
+    setAddNote(false);
+  };
+
+  const handleEditStatus = async () => {
+    const updatedBusiness: Partial<Business> = {
+      contacted: !contacted,
+    };
+    setContacted(!contacted);
+    await handleUpdate(
+      business.id,
+      updatedBusiness,
+      "Modifica effettuata",
+      "Errore"
+    );
   };
 
   return (
@@ -82,15 +108,17 @@ export function BusinessDetailView({
           <h3 className="text-xl font-bold leading-7 text-gray-900">
             {business.name}
           </h3>
-          <span
-            className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
-              business.contacted
-                ? "bg-green-50 text-green-700 ring-green-600/10"
-                : "bg-red-50 text-red-700 ring-red-600/10"
-            }`}
-          >
-            {business.contacted ? "Contattato" : "Non contattato"}
-          </span>
+          <button onClick={handleEditStatus}>
+            <span
+              className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
+                contacted
+                  ? "bg-green-50 text-green-700 ring-green-600/10"
+                  : "bg-red-50 text-red-700 ring-red-600/10"
+              }`}
+            >
+              {contacted ? "Contattato" : "Non contattato"}
+            </span>
+          </button>
         </div>
         <div className="mt-6 border-t border-gray-100">
           <dl className="divide-y divide-gray-100">
