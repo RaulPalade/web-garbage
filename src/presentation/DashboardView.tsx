@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useBusinessModelController } from "./hooks/useBusinessModelController";
 import { BusinessRepository } from "../domain/repository/BusinessRepository";
 import { Business, NewBusiness } from "../domain/models";
-import { toast } from "react-toastify";
+import { showErrorToast, showSuccessToast } from "../utils/toastUtils";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -59,16 +59,23 @@ export function DashboardView({
     if (fileInput && fileInput.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
       const content = await readFile(file);
-
       const dataToAdd = processData(JSON.parse(content));
-      console.log(dataToAdd);
 
-      setLoading(true);
-      await handleAddBusinesses(dataToAdd);
-      loadBusinesses();
+      try {
+        setLoading(true);
+        const addResponse = await handleAddBusinesses(dataToAdd);
+        if (addResponse) {
+          showSuccessToast("File caricato");
+          loadBusinesses();
+        } else {
+          showErrorToast("Errore durante il caricamento del file");
+        }
+        setLoading(false);
+      } catch (e) {
+        setLoading(false);
+        showErrorToast("Errore durante il caricamento del file");
+      }
       fileInput.value = "";
-      setLoading(false);
-      toast.success("JSON Uploaded");
     }
   };
 
