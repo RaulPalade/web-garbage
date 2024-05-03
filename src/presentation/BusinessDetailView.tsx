@@ -17,41 +17,45 @@ export function BusinessDetailView({
   authRepository: AuthRepository;
   businessRepository: BusinessRepository;
 }) {
-  const location = useLocation();
-  const business: Business = location.state.business;
-
   const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
   const mapId = process.env.REACT_APP_GOOGLE_MAPS_ID_KEY;
 
+  const location = useLocation();
+  const businessId: string = location.state;
+  const [business, setBusiness] = useState<Business>();
   const [position, setPosition] = useState({ lat: 0, lng: 0 });
   const [addNote, setAddNote] = useState<boolean>(false);
-  const [description, setDescription] = useState<string>(
-    business.notes.replace(/\\n/g, "\n")
-  );
-  const [contacted, setContacted] = useState<boolean>(business.contacted);
 
-  const { handleUpdateBusiness } =
+  const { handleGetBusinessById, handleUpdateBusiness } =
     useBusinessModelController(businessRepository);
 
   useEffect(() => {
-    async function fetchGeocode() {
-      const address = business.street + " " + business.city;
+    async function fetchBusiness() {
       try {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-            address
-          )}&key=${apiKey}`
-        );
-        const data = await response.json();
-        const { lat, lng } = data.results[0].geometry.location;
-        setPosition({ lat, lng });
+        const business = await handleGetBusinessById(businessId);
+
+        if (business) {
+          setBusiness(business);
+          const address = business.street + " " + business.city;
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+              address
+            )}&key=${apiKey}`
+          );
+          const data = await response.json();
+          const { lat, lng } = data.results[0].geometry.location;
+          setPosition({ lat, lng });
+        } else {
+          console.error("Business not found");
+        }
       } catch (error) {
-        console.error("Error fetching geocode:", error);
+        console.error("Error fetching business:", error);
       }
     }
 
-    fetchGeocode();
-  }, [business, apiKey, mapId]);
+    fetchBusiness();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleUpdate = async (
     id: string,
@@ -76,10 +80,10 @@ export function BusinessDetailView({
 
   const handleEditBusiness = async () => {
     const updatedBusiness: Partial<Business> = {
-      notes: description.replace(/\n/g, "\\n"),
+      notes: business?.notes.replace(/\n/g, "\\n"),
     };
     await handleUpdate(
-      business.id,
+      business?.id ?? "",
       updatedBusiness,
       "Modifica effettuata",
       "Errore"
@@ -89,18 +93,23 @@ export function BusinessDetailView({
 
   const handleEditStatus = async () => {
     const updatedBusiness: Partial<Business> = {
-      contacted: !contacted,
+      contacted: !business?.contacted,
     };
-    setContacted(!contacted);
+
+    setBusiness((prevBusiness) => ({
+      ...prevBusiness!,
+      contacted: !business?.contacted,
+    }));
+
     await handleUpdate(
-      business.id,
+      business?.id ?? "",
       updatedBusiness,
       "Modifica effettuata",
       "Errore"
     );
   };
 
-  return (
+  return business ? (
     <div className="w-full min-h-full">
       <HeaderComponent authRepository={authRepository} />
       <div className="p-10">
@@ -111,12 +120,12 @@ export function BusinessDetailView({
           <button onClick={handleEditStatus}>
             <span
               className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
-                contacted
+                business.contacted
                   ? "bg-green-50 text-green-700 ring-green-600/10"
                   : "bg-red-50 text-red-700 ring-red-600/10"
               }`}
             >
-              {contacted ? "Contattato" : "Non contattato"}
+              {business.contacted ? "Contattato" : "Non contattato"}
             </span>
           </button>
         </div>
@@ -173,8 +182,13 @@ export function BusinessDetailView({
                       name="description"
                       rows={3}
                       id="description"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
+                      value={business.notes.replace(/\\n/g, "\n")}
+                      onChange={(e) => {
+                        setBusiness((prevBusiness) => ({
+                          ...prevBusiness!,
+                          notes: e.target.value,
+                        }));
+                      }}
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:bg-palette-lighter sm:text-sm sm:leading-6"
                     />
                     <div className="flex space-x-2 mt-2">
@@ -196,10 +210,11 @@ export function BusinessDetailView({
               ) : (
                 <dd className="flex mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 items-center">
                   <div>
-                    {description === "" ? (
+                    {business.notes === "" ? (
                       <p>Nessuna nota</p>
                     ) : (
-                      description
+                      business.notes
+                        .replace(/\\n/g, "\n")
                         .split("\n")
                         .map((line, index) => <p key={index}>{line}</p>)
                     )}
@@ -244,5 +259,7 @@ export function BusinessDetailView({
 
       <FooterComponent />
     </div>
+  ) : (
+    <div>Business non trovato</div>
   );
 }

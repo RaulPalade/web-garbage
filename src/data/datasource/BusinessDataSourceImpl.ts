@@ -14,11 +14,13 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   query,
   updateDoc,
   where,
 } from "firebase/firestore";
+import { Business } from "../../domain/models";
 
 export class BusinessDataSourceImpl implements BusinessDataSource {
   businessesRef = collection(db, "businesses");
@@ -36,6 +38,21 @@ export class BusinessDataSourceImpl implements BusinessDataSource {
       this.cachedBusinesses = businessesSnapshot.docs;
       return new ResponseSuccess(businessesSnapshot);
     } catch (e) {
+      return new ResponseFailure("Something went wrong");
+    }
+  }
+
+  async getBusinessById(businessId: string): Promise<ApiResponse<Business>> {
+    try {
+      const businessDoc = await getDoc(doc(this.businessesRef, businessId));
+      if (businessDoc.exists()) {
+        const businessData = businessDoc.data();
+        return new ResponseSuccess(businessData as Business);
+      } else {
+        return new ResponseFailure("Business not found");
+      }
+    } catch (e) {
+      console.log(e);
       return new ResponseFailure("Something went wrong");
     }
   }

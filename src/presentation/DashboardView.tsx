@@ -49,8 +49,8 @@ export function DashboardView({
     setCurrentPage(page);
   };
 
-  const navigateToBusiness = (business: Business) => {
-    navigate(`/businesses/${business.id}`, { state: { business } });
+  const navigateToBusiness = (businessId: string) => {
+    navigate(`/businesses/${businessId}`, { state: businessId });
   };
 
   const handleUploadJson = async () => {
@@ -159,7 +159,7 @@ export function DashboardView({
             <li
               key={business.id}
               className="flex justify-between gap-x-6 py-4 px-4 cursor-pointer transition-all duration-300 hover:bg-palette-lighter"
-              onClick={() => navigateToBusiness(business)}
+              onClick={() => navigateToBusiness(business.id)}
             >
               <div className="flex min-w-0 gap-x-4">
                 <div className="min-w-0 flex-auto">

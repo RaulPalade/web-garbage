@@ -2,11 +2,18 @@ import { Business, NewBusiness } from "../../domain/models";
 import { BusinessRepository } from "../../domain/repository/BusinessRepository";
 import { addBusinesses } from "../../domain/usecase/AddBusinessesUseCase";
 import { getAllBusinesses } from "../../domain/usecase/GetAllBusinessesUseCase";
+import { getBusinessById } from "../../domain/usecase/GetBusinessByIdUseCase";
 import { updateBusiness } from "../../domain/usecase/UpdateBusinessUseCase";
 
 export function useBusinessModelController(repository: BusinessRepository) {
   const handleGetAllBusinesses = async (): Promise<Business[]> => {
     return await getAllBusinesses(repository);
+  };
+
+  const handleGetBusinessById = async (
+    businessId: string
+  ): Promise<Business | null> => {
+    return await getBusinessById(repository, businessId);
   };
 
   const handleAddBusinesses = async (
@@ -22,5 +29,10 @@ export function useBusinessModelController(repository: BusinessRepository) {
     return await updateBusiness(repository, businessId, business);
   };
 
-  return { handleGetAllBusinesses, handleAddBusinesses, handleUpdateBusiness };
+  return {
+    handleGetAllBusinesses,
+    handleGetBusinessById,
+    handleAddBusinesses,
+    handleUpdateBusiness,
+  };
 }

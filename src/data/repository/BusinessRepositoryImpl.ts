@@ -42,6 +42,16 @@ export class BusinessRepositoryImpl implements BusinessRepository {
     }
   }
 
+  async getBusinessById(businessId: string): Promise<Result<Business>> {
+    const businessResponse = await this.dataSource.getBusinessById(businessId);
+    if (businessResponse instanceof ResponseSuccess) {
+      return new Success(businessResponse.value);
+    } else {
+      const error: string = (businessResponse as Failure<string>).error;
+      return new Failure(error);
+    }
+  }
+
   async addBusinesses(businesses: NewBusiness[]): Promise<Result<boolean>> {
     try {
       const promises: Promise<Result<boolean>>[] = [];
