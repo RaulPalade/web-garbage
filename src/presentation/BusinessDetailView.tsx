@@ -33,6 +33,7 @@ export function BusinessDetailView({
     async function fetchBusiness() {
       try {
         const business = await handleGetBusinessById(businessId);
+        console.log(business);
 
         if (business) {
           setBusiness(business);
@@ -58,14 +59,13 @@ export function BusinessDetailView({
   }, []);
 
   const handleUpdate = async (
-    id: string,
     updatedBusiness: Partial<Business>,
     successMessage: string,
     errorMessage: string
   ) => {
     try {
       const updateResponse = await handleUpdateBusiness(
-        id,
+        businessId,
         updatedBusiness as Business
       );
       if (updateResponse) {
@@ -74,6 +74,7 @@ export function BusinessDetailView({
         showErrorToast(errorMessage);
       }
     } catch (error) {
+      console.log(error);
       showErrorToast(errorMessage);
     }
   };
@@ -82,12 +83,8 @@ export function BusinessDetailView({
     const updatedBusiness: Partial<Business> = {
       notes: business?.notes.replace(/\n/g, "\\n"),
     };
-    await handleUpdate(
-      business?.id ?? "",
-      updatedBusiness,
-      "Modifica effettuata",
-      "Errore"
-    );
+    console.log(business);
+    await handleUpdate(updatedBusiness, "Modifica effettuata", "Errore");
     setAddNote(false);
   };
 
@@ -101,12 +98,7 @@ export function BusinessDetailView({
       contacted: !business?.contacted,
     }));
 
-    await handleUpdate(
-      business?.id ?? "",
-      updatedBusiness,
-      "Modifica effettuata",
-      "Errore"
-    );
+    await handleUpdate(updatedBusiness, "Modifica effettuata", "Errore");
   };
 
   return business ? (
