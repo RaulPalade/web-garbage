@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AuthRepository } from "../domain/repository";
 import { BusinessRepository } from "../domain/repository/BusinessRepository";
 import { Business } from "../domain/models";
@@ -24,6 +24,7 @@ export function BusinessDetailView({
 }) {
   const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
   const mapId = process.env.REACT_APP_GOOGLE_MAPS_ID_KEY;
+  const navigate = useNavigate();
 
   const location = useLocation();
   const businessId: string = location.state;
@@ -110,6 +111,7 @@ export function BusinessDetailView({
       const addResponse = await handleDeleteBusiness(businessId);
       if (addResponse) {
         showSuccessToast("Business eliminato");
+        navigate(-1);
       } else {
         showErrorToast("Errore durante l'eliminazione");
       }
