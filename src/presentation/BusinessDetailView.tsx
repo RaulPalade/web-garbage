@@ -4,7 +4,12 @@ import { BusinessRepository } from "../domain/repository/BusinessRepository";
 import { Business } from "../domain/models";
 import { FooterComponent } from "./components/FooterComponent";
 import { HeaderComponent } from "./components/HeaderComponent";
-import { PencilSquareIcon, StarIcon } from "@heroicons/react/24/outline";
+import {
+  CheckIcon,
+  PencilSquareIcon,
+  StarIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import { APIProvider, AdvancedMarker, Map } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
 import { useBusinessModelController } from "./hooks/useBusinessModelController";
@@ -26,7 +31,7 @@ export function BusinessDetailView({
   const [position, setPosition] = useState({ lat: 0, lng: 0 });
   const [addNote, setAddNote] = useState<boolean>(false);
 
-  const { handleGetBusinessById, handleUpdateBusiness } =
+  const { handleGetBusinessById, handleUpdateBusiness, handleDeleteBusiness } =
     useBusinessModelController(businessRepository);
 
   useEffect(() => {
@@ -83,7 +88,6 @@ export function BusinessDetailView({
     const updatedBusiness: Partial<Business> = {
       notes: business?.notes.replace(/\n/g, "\\n"),
     };
-    console.log(business);
     await handleUpdate(updatedBusiness, "Modifica effettuata", "Errore");
     setAddNote(false);
   };
@@ -101,14 +105,50 @@ export function BusinessDetailView({
     await handleUpdate(updatedBusiness, "Modifica effettuata", "Errore");
   };
 
+  const handleDelete = async () => {
+    try {
+      const addResponse = await handleDeleteBusiness(businessId);
+      if (addResponse) {
+        showSuccessToast("Business eliminato");
+      } else {
+        showErrorToast("Errore durante l'eliminazione");
+      }
+    } catch (e) {
+      showErrorToast("Errore durante l'eliminazione");
+    }
+  };
+
   return business ? (
     <div className="w-full min-h-full">
       <HeaderComponent authRepository={authRepository} />
       <div className="p-10">
         <div className="flex justify-between px-4 sm:px-0">
-          <h3 className="text-xl font-bold leading-7 text-gray-900">
-            {business.name}
-          </h3>
+          <div className="flex space-x-4">
+            <button
+              type="button"
+              className="relative -m-2 inline-flex items-center justify-center rounded-md h-10 w-10 p-2 text-white bg-green-500 hover:bg-green-600 transition duration-200"
+              onClick={() => {}}
+            >
+              <span className="absolute -inset-0.5" />
+              <span className="sr-only">Conferma</span>
+              <CheckIcon className="h-6 w-6" aria-hidden="true" />
+            </button>
+
+            <button
+              type="button"
+              className="relative -m-2 inline-flex items-center justify-center rounded-md h-10 w-10 p-2 text-white bg-red-500 hover:bg-red-600 transition duration-200"
+              onClick={handleDelete}
+            >
+              <span className="absolute -inset-0.5" />
+              <span className="sr-only">Elimina</span>
+              <TrashIcon className="h-6 w-6" aria-hidden="true" />
+            </button>
+
+            <h3 className="text-xl font-bold leading-7 text-gray-900">
+              {business.name}
+            </h3>
+          </div>
+
           <button onClick={handleEditStatus}>
             <span
               className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
@@ -130,6 +170,8 @@ export function BusinessDetailView({
               <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                 <a
                   href={business.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-palette-primary hover:text-palette-dark"
                 >
                   {business.website}

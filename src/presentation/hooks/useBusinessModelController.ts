@@ -1,6 +1,7 @@
 import { Business, NewBusiness } from "../../domain/models";
 import { BusinessRepository } from "../../domain/repository/BusinessRepository";
 import { addBusinesses } from "../../domain/usecase/AddBusinessesUseCase";
+import { deleteBusiness } from "../../domain/usecase/DeleteBusinessUseCase";
 import { getAllBusinesses } from "../../domain/usecase/GetAllBusinessesUseCase";
 import { getBusinessById } from "../../domain/usecase/GetBusinessByIdUseCase";
 import { updateBusiness } from "../../domain/usecase/UpdateBusinessUseCase";
@@ -29,10 +30,15 @@ export function useBusinessModelController(repository: BusinessRepository) {
     return await updateBusiness(repository, businessId, business);
   };
 
+  const handleDeleteBusiness = async (businessId: string): Promise<boolean> => {
+    return await deleteBusiness(repository, businessId);
+  };
+
   return {
     handleGetAllBusinesses,
     handleGetBusinessById,
     handleAddBusinesses,
     handleUpdateBusiness,
+    handleDeleteBusiness,
   };
 }
