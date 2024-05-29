@@ -45,10 +45,6 @@ export function DashboardView({
     setBusinesses(businesses);
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
   const navigateToBusiness = (businessId: string) => {
     navigate(`/businesses/${businessId}`, { state: businessId });
   };
@@ -141,6 +137,51 @@ export function DashboardView({
     return url.replace(/^(https?:\/\/)?(www\.)?/i, "").replace(/\/$/, "");
   };
 
+  const totalPages = Math.ceil(businesses.length / itemsPerPage);
+  const pageRangeDisplayed = 5;
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
+  const renderPageButtons = () => {
+    let startPage = Math.max(
+      1,
+      currentPage - Math.floor(pageRangeDisplayed / 2)
+    );
+    let endPage = startPage + pageRangeDisplayed - 1;
+
+    if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = Math.max(1, endPage - pageRangeDisplayed + 1);
+    }
+
+    const pages = [];
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(
+        <button
+          type="button"
+          key={i}
+          className={`
+  relative inline-flex items-center px-4 py-2 text-sm font-semibold
+  ${
+    i === currentPage
+      ? "bg-palette-primary text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:bg-palette-dark"
+      : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
+  }
+`}
+          onClick={() => handlePageChange(i)}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    return pages;
+  };
+
   return (
     <div className="w-full min-h-full">
       <HeaderComponent authRepository={authRepository} />
@@ -203,12 +244,14 @@ export function DashboardView({
             <button
               type="button"
               className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              onClick={() => handlePageChange(currentPage - 1)}
             >
               Previous
             </button>
             <button
               type="button"
               className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              onClick={() => handlePageChange(currentPage + 1)}
             >
               Next
             </button>
@@ -243,25 +286,7 @@ export function DashboardView({
                   <span className="sr-only">Previous</span>
                   <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
                 </button>
-                {Array.from({
-                  length: Math.ceil(businesses.length / itemsPerPage),
-                }).map((_, index) => (
-                  <button
-                    type="button"
-                    key={index}
-                    className={`
-  relative inline-flex items-center px-4 py-2 text-sm font-semibold
-  ${
-    index + 1 === currentPage
-      ? "bg-palette-primary text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:bg-palette-dark"
-      : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
-  }
-`}
-                    onClick={() => handlePageChange(index + 1)}
-                  >
-                    {index + 1}
-                  </button>
-                ))}
+                {renderPageButtons()}
                 <button
                   type="button"
                   className={classNames(
