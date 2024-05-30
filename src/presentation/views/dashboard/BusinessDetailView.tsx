@@ -13,6 +13,8 @@ import { CollectionType } from "../../../data/datasource/BusinessDataSourceImpl"
 import { useMediaQuery } from "@react-hook/media-query";
 import { DesktopBusinessDetailHeader } from "../../components/DesktopBusinessDetailHeader";
 import { MobileBusinessDetailHeader } from "../../components/MobileBusinessDetailHeader";
+import { CircularLoaderComponent } from "../../components/CircularLoaderComponent";
+import generalAnimation from "../../../assets/lotties/generalAnimation.json";
 
 export function BusinessDetailView({
   authRepository,
@@ -30,6 +32,7 @@ export function BusinessDetailView({
   const [business, setBusiness] = useState<Business>();
   const [position, setPosition] = useState({ lat: 0, lng: 0 });
   const [addNote, setAddNote] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const { handleGetBusinessById, handleUpdateBusiness, handleDeleteBusiness } =
     useBusinessModelController(businessRepository);
@@ -58,6 +61,10 @@ export function BusinessDetailView({
         }
       } catch (error) {
         console.error("Error fetching business:", error);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 2000);
       }
     }
 
@@ -82,7 +89,6 @@ export function BusinessDetailView({
         showErrorToast(errorMessage);
       }
     } catch (error) {
-      console.log(error);
       showErrorToast(errorMessage);
     }
   };
@@ -125,7 +131,7 @@ export function BusinessDetailView({
     }
   };
 
-  return business ? (
+  return business && !loading ? (
     <div className="w-full min-h-full">
       <HeaderComponent authRepository={authRepository} />
       <div className="p-10">
@@ -276,6 +282,11 @@ export function BusinessDetailView({
       <FooterComponent />
     </div>
   ) : (
-    <div>Business non trovato</div>
+    <div className="flex items-center justify-center h-screen">
+      <CircularLoaderComponent
+        animation={generalAnimation}
+        message={"Caricamento in corso"}
+      />
+    </div>
   );
 }

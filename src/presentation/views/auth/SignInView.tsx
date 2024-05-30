@@ -8,6 +8,8 @@ import SignInForm, {
 } from "../../components/SignInFormComponent";
 import { useAuthModelController } from "../../hooks/useAuthModelController";
 import { FooterComponent } from "../../components/FooterComponent";
+import { CircularLoaderComponent } from "../../components/CircularLoaderComponent";
+import generalAnimation from "../../../assets/lotties/generalAnimation.json";
 
 export function SignInView({
   authRepository,
@@ -15,6 +17,7 @@ export function SignInView({
   authRepository: AuthRepository;
 }) {
   const navigate = useNavigate();
+  const [loginSuccess, setLoginSuccess] = useState<boolean>(false);
   const [forgotPassword, setForgotPassword] = useState<boolean>(false);
   const [formData, setFormData] = useState<SignInFormData>({
     email: "",
@@ -37,14 +40,18 @@ export function SignInView({
     try {
       const result = await handleSignIn(formData.email, formData.password);
       if (result) {
-        showSuccessToast("Accesso eseguito");
-        navigate("/");
+        setLoginSuccess(true);
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
       } else {
+        setLoginSuccess(false);
         showErrorToast(
           "Qualcosa è andato storto. Ti preghiamo di riprovare più tardi."
         );
       }
     } catch (error) {
+      setLoginSuccess(false);
       showErrorToast(
         "Qualcosa è andato storto. Ti preghiamo di riprovare più tardi."
       );
@@ -69,7 +76,14 @@ export function SignInView({
     }
   };
 
-  return (
+  return loginSuccess ? (
+    <div className="flex items-center justify-center h-screen">
+      <CircularLoaderComponent
+        animation={generalAnimation}
+        message={"Login in corso"}
+      />
+    </div>
+  ) : (
     <div className="w-full min-h-full">
       {forgotPassword ? (
         <ForgotPasswordFormComponent

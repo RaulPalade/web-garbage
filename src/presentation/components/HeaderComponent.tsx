@@ -28,7 +28,7 @@ export function HeaderComponent({
       const result = await handleSignOut();
 
       if (result) {
-        showSuccessToast("Log out eseguito");
+        showSuccessToast("Logout eseguito");
         navigate("/");
       } else {
         showErrorToast(

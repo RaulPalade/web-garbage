@@ -158,7 +158,7 @@ export function DashboardView({
           <p className="text-4xl font-bold tracking-tight text-gray-900">
             Business
           </p>
-          <label className="hidden sm:flex items-center justify-center rounded-md border border-transparent bg-palette-dark hover:bg-palette-light px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:bg-palette-dark focus:ring-offset-2 cursor-pointer">
+          <label className="hidden sm:flex items-center justify-center rounded-md border border-transparent bg-palette-primary hover:bg-palette-dark px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:bg-palette-dark focus:ring-offset-2 cursor-pointer">
             <ArrowUpOnSquareIcon className="h-5 w-5 mr-2" aria-hidden="true" />
             <input
               type="file"
