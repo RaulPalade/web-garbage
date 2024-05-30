@@ -1,5 +1,5 @@
-import { Transition, Dialog } from "@headlessui/react";
 import { CircularLoaderComponent } from "./CircularLoaderComponent";
+import { Transition, Dialog } from "@headlessui/react";
 
 export function LoaderView({
   animation,

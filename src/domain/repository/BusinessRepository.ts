@@ -1,7 +1,34 @@
+import {
+  CollectionReference,
+  DocumentData,
+  QueryDocumentSnapshot,
+  collection,
+} from "firebase/firestore";
+import { db } from "../../firebase.config";
 import { Result } from "../models/Result";
 import { Business } from "../models/Business";
 import { NewBusiness } from "../models/NewBusiness";
-import { CollectionType } from "../../data/datasource/BusinessDataSourceImpl";
+
+export enum CollectionType {
+  Clients = "clients",
+  Businesses = "businesses",
+}
+
+export interface CollectionData {
+  ref: CollectionReference<DocumentData>;
+  cachedData: QueryDocumentSnapshot<DocumentData, DocumentData>[] | null;
+}
+
+export const collectionMap: Record<CollectionType, CollectionData> = {
+  [CollectionType.Clients]: {
+    ref: collection(db, CollectionType.Clients),
+    cachedData: null,
+  },
+  [CollectionType.Businesses]: {
+    ref: collection(db, CollectionType.Businesses),
+    cachedData: null,
+  },
+};
 
 export interface BusinessRepository {
   getAllDocuments(collectionType: CollectionType): Promise<Result<Business[]>>;

@@ -1,11 +1,11 @@
 import { User, sendPasswordResetEmail, signOut } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { AuthDataSource } from "./AuthDataSource";
 import {
   ApiResponse,
   ResponseFailure,
   ResponseSuccess,
 } from "../models/ApiResponse";
-import { AuthDataSource } from "./AuthDataSource";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 export class AuthDataSourceImpl implements AuthDataSource {
   auth = getAuth();

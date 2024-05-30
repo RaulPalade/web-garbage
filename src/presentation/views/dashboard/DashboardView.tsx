@@ -2,14 +2,16 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@react-hook/media-query";
 import { AuthRepository } from "../../../domain/repository/AuthRepository";
-import { BusinessRepository } from "../../../domain/repository/BusinessRepository";
+import {
+  BusinessRepository,
+  CollectionType,
+} from "../../../domain/repository/BusinessRepository";
+import { useBusinessModelController } from "../../hooks/useBusinessModelController";
 import { Business, NewBusiness } from "../../../domain/models";
-import { CollectionType } from "../../../data/datasource/BusinessDataSourceImpl";
 import { HeaderComponent } from "../../components/headers/HeaderComponent";
 import { FooterComponent } from "../../components/headers/FooterComponent";
 import { LoaderView } from "../../components/loaders/LoaderView";
 import { ArrowUpOnSquareIcon } from "@heroicons/react/24/outline";
-import { useBusinessModelController } from "../../hooks/useBusinessModelController";
 import { DesktopTableComponent } from "../../components/tables/DesktopTableComponent";
 import { MobileTableComponent } from "../../components/tables/MobileTabelComponent";
 import { PaginationComponent } from "../../components/PaginationComponent";
@@ -42,6 +44,7 @@ export function DashboardView({
 
   useEffect(() => {
     loadBusinesses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadBusinesses = async () => {

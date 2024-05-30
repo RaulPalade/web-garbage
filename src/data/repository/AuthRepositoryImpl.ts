@@ -1,9 +1,9 @@
 import { User } from "firebase/auth";
-import { Result } from "../../domain/models";
 import { AuthRepository } from "../../domain/repository/AuthRepository";
 import { AuthDataSource } from "../datasource/AuthDataSource";
 import { ResponseSuccess } from "../models/ApiResponse";
 import { Failure, Success } from "../../domain/models/Result";
+import { Result } from "../../domain/models";
 
 export class AuthRepositoryImpl implements AuthRepository {
   dataSource: AuthDataSource;

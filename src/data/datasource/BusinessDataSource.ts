@@ -1,8 +1,8 @@
 import { DocumentData, QuerySnapshot } from "firebase/firestore";
-import { NewBusiness } from "../../domain/models/NewBusiness";
 import { ApiResponse } from "../models/ApiResponse";
+import { NewBusiness } from "../../domain/models/NewBusiness";
 import { Business } from "../../domain/models/Business";
-import { CollectionType } from "./BusinessDataSourceImpl";
+import { CollectionType } from "../../domain/repository/BusinessRepository";
 
 export interface BusinessDataSource {
   getAllDocuments(

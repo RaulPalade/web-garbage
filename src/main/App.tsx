@@ -1,6 +1,6 @@
-import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "../firebase.config";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Importa BrowserRouter
+import "./App.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

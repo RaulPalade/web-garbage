@@ -1,16 +1,18 @@
-import { useMediaQuery } from "@react-hook/media-query";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { CollectionType } from "../../../data/datasource/BusinessDataSourceImpl";
-import { Business } from "../../../domain/models";
+import { useMediaQuery } from "@react-hook/media-query";
 import { AuthRepository } from "../../../domain/repository";
-import { BusinessRepository } from "../../../domain/repository/BusinessRepository";
+import {
+  BusinessRepository,
+  CollectionType,
+} from "../../../domain/repository/BusinessRepository";
+import { useBusinessModelController } from "../../hooks/useBusinessModelController";
+import { Business } from "../../../domain/models";
 import { DesktopTableComponent } from "../../components/tables/DesktopTableComponent";
 import { FooterComponent } from "../../components/headers/FooterComponent";
 import { HeaderComponent } from "../../components/headers/HeaderComponent";
 import { MobileTableComponent } from "../../components/tables/MobileTabelComponent";
 import { PaginationComponent } from "../../components/PaginationComponent";
-import { useBusinessModelController } from "../../hooks/useBusinessModelController";
 
 export function ClientsView({
   authRepository,
@@ -30,6 +32,7 @@ export function ClientsView({
 
   useEffect(() => {
     loadBusinesses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadBusinesses = async () => {

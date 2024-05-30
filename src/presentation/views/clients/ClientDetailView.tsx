@@ -1,15 +1,17 @@
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { AuthRepository } from "../../../domain/repository";
-import { BusinessRepository } from "../../../domain/repository/BusinessRepository";
+import {
+  BusinessRepository,
+  CollectionType,
+} from "../../../domain/repository/BusinessRepository";
+import { useBusinessModelController } from "../../hooks/useBusinessModelController";
 import { Business } from "../../../domain/models";
 import { FooterComponent } from "../../components/headers/FooterComponent";
 import { HeaderComponent } from "../../components/headers/HeaderComponent";
 import { PencilSquareIcon, StarIcon } from "@heroicons/react/24/outline";
 import { APIProvider, AdvancedMarker, Map } from "@vis.gl/react-google-maps";
-import { useEffect, useState } from "react";
-import { useBusinessModelController } from "../../hooks/useBusinessModelController";
 import { showErrorToast, showSuccessToast } from "../../../utils/toastUtils";
-import { CollectionType } from "../../../data/datasource/BusinessDataSourceImpl";
 
 export function ClientDetailView({
   authRepository,

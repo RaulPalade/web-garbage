@@ -1,5 +1,5 @@
-import { CheckIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Business } from "../../../domain/models";
+import { CheckIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 export function MobileBusinessDetailHeader({
   handleDelete,

@@ -1,7 +1,9 @@
-import { CollectionType } from "../../data/datasource/BusinessDataSourceImpl";
+import {
+  BusinessRepository,
+  CollectionType,
+} from "../repository/BusinessRepository";
 import { NewBusiness } from "../models";
 import { Success } from "../models/Result";
-import { BusinessRepository } from "../repository/BusinessRepository";
 
 export async function addBusinesses(
   repository: BusinessRepository,

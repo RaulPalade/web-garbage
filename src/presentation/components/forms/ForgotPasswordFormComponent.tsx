@@ -1,5 +1,5 @@
-import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
+import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
 
 export default function ForgotPasswordFormComponent({
   onCancel,

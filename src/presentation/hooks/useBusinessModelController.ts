@@ -1,11 +1,13 @@
-import { CollectionType } from "../../data/datasource/BusinessDataSourceImpl";
-import { Business, NewBusiness } from "../../domain/models";
-import { BusinessRepository } from "../../domain/repository/BusinessRepository";
+import {
+  BusinessRepository,
+  CollectionType,
+} from "../../domain/repository/BusinessRepository";
 import { addBusinesses } from "../../domain/usecase/AddBusinessesUseCase";
 import { deleteBusiness } from "../../domain/usecase/DeleteBusinessUseCase";
 import { getAllDocuments } from "../../domain/usecase/GetAllDocumentsUseCase";
 import { getBusinessById } from "../../domain/usecase/GetBusinessByIdUseCase";
 import { updateBusiness } from "../../domain/usecase/UpdateBusinessUseCase";
+import { Business, NewBusiness } from "../../domain/models";
 
 export function useBusinessModelController(repository: BusinessRepository) {
   const handleGetAllDocuments = async (

@@ -11,13 +11,13 @@ export function NotFoundView() {
         </p>
         <div className="mt-10 flex items-center justify-center gap-x-6">
           <a
-            href="https://gobarber.it"
+            href="/"
             className="rounded-md bg-palette-primary hover:bg-palette-dark px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:bg-palette-dark"
           >
             Torna alla home
           </a>
           <a
-            href="mailto:gobarber.info@gmail.com"
+            href="mailto:raulpalade@outlook.com"
             className="text-sm font-semibold text-gray-900"
           >
             Contatta il supporto <span aria-hidden="true">&rarr;</span>

@@ -1,5 +1,5 @@
-import { Success } from "../models/Result";
 import { AuthRepository } from "../repository/AuthRepository";
+import { Success } from "../models/Result";
 
 export async function signIn(
   email: string,

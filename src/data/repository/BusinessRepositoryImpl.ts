@@ -1,10 +1,12 @@
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
-import { Business, NewBusiness, Result } from "../../domain/models";
-import { Success, Failure } from "../../domain/models/Result";
-import { BusinessRepository } from "../../domain/repository/BusinessRepository";
+import {
+  BusinessRepository,
+  CollectionType,
+} from "../../domain/repository/BusinessRepository";
 import { BusinessDataSource } from "../datasource/BusinessDataSource";
 import { ResponseSuccess } from "../models/ApiResponse";
-import { CollectionType } from "../datasource/BusinessDataSourceImpl";
+import { Business, NewBusiness, Result } from "../../domain/models";
+import { Success, Failure } from "../../domain/models/Result";
 
 export class BusinessRepositoryImpl implements BusinessRepository {
   dataSource: BusinessDataSource;

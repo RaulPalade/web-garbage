@@ -1,6 +1,8 @@
-import { CollectionType } from "../../data/datasource/BusinessDataSourceImpl";
+import {
+  BusinessRepository,
+  CollectionType,
+} from "../repository/BusinessRepository";
 import { Success } from "../models/Result";
-import { BusinessRepository } from "../repository/BusinessRepository";
 
 export async function deleteBusiness(
   repository: BusinessRepository,

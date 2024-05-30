@@ -1,18 +1,8 @@
-import { NewBusiness } from "../../domain/models/NewBusiness";
 import {
-  ApiResponse,
-  ResponseFailure,
-  ResponseSuccess,
-} from "../models/ApiResponse";
-import { BusinessDataSource } from "./BusinessDataSource";
-import { db } from "../../firebase.config";
-import {
-  CollectionReference,
   DocumentData,
   QueryDocumentSnapshot,
   QuerySnapshot,
   addDoc,
-  collection,
   deleteDoc,
   doc,
   getDoc,
@@ -21,28 +11,18 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { Business } from "../../domain/models";
-
-export enum CollectionType {
-  Clients = "clients",
-  Businesses = "businesses",
-}
-
-export interface CollectionData {
-  ref: CollectionReference<DocumentData>;
-  cachedData: QueryDocumentSnapshot<DocumentData, DocumentData>[] | null;
-}
-
-const collectionMap: Record<CollectionType, CollectionData> = {
-  [CollectionType.Clients]: {
-    ref: collection(db, CollectionType.Clients),
-    cachedData: null,
-  },
-  [CollectionType.Businesses]: {
-    ref: collection(db, CollectionType.Businesses),
-    cachedData: null,
-  },
-};
+import {
+  ApiResponse,
+  ResponseFailure,
+  ResponseSuccess,
+} from "../models/ApiResponse";
+import {
+  CollectionType,
+  collectionMap,
+} from "../../domain/repository/BusinessRepository";
+import { BusinessDataSource } from "./BusinessDataSource";
+import { NewBusiness } from "../../domain/models/NewBusiness";
+import { Business } from "../../domain/models/Business";
 
 export class BusinessDataSourceImpl implements BusinessDataSource {
   async getAllDocuments(
