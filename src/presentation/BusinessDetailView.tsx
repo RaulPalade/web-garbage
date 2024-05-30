@@ -4,12 +4,7 @@ import { BusinessRepository } from "../domain/repository/BusinessRepository";
 import { Business } from "../domain/models";
 import { FooterComponent } from "./components/FooterComponent";
 import { HeaderComponent } from "./components/HeaderComponent";
-import {
-  CheckIcon,
-  PencilSquareIcon,
-  StarIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+import { PencilSquareIcon, StarIcon } from "@heroicons/react/24/outline";
 import { APIProvider, AdvancedMarker, Map } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
 import { useBusinessModelController } from "./hooks/useBusinessModelController";

@@ -39,12 +39,12 @@ export function MobileTableComponent({
             </p>
             <span
               className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
-                business.website === "Non disponibile"
+                business.website === "Sito web non disponibile"
                   ? "bg-red-50 text-red-700 ring-red-600/10"
                   : "bg-green-50 text-green-700 ring-green-600/20"
               } text-right`}
             >
-              {business.website !== "Non disponibile"
+              {business.website !== "Sito web non disponibile"
                 ? removeHttpAndWww(business.website)
                 : business.website}
             </span>
