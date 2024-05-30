@@ -140,7 +140,7 @@ export function HeaderComponent({
                   onClick={signOut}
                   className="flex w-full items-center justify-center rounded-md border border-transparent bg-palette-primary hover:bg-palette-dark px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:bg-palette-dark focus:ring-offset-2"
                 >
-                  Sign out
+                  Logout
                 </button>
               </div>
             </div>

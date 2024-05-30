@@ -13,6 +13,9 @@ import { BusinessRepository } from "../domain/repository/BusinessRepository";
 import { Business, NewBusiness } from "../domain/models";
 import { showErrorToast, showSuccessToast } from "../utils/toastUtils";
 import { CollectionType } from "../data/datasource/BusinessDataSourceImpl";
+import { DesktopTableComponent } from "./components/DesktopTableComponent";
+import { MobileTableComponent } from "./components/MobileTabelComponent";
+import { useMediaQuery } from "@react-hook/media-query";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -25,15 +28,15 @@ export function DashboardView({
   authRepository: AuthRepository;
   businessRepository: BusinessRepository;
 }) {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const navigate = useNavigate();
-
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState<boolean>(false);
   const itemsPerPage = 8;
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const { handleGetAllDocuments, handleAddBusinesses, handleDeleteBusiness } =
+  const { handleGetAllDocuments, handleAddBusinesses } =
     useBusinessModelController(businessRepository);
 
   useEffect(() => {
@@ -131,31 +134,9 @@ export function DashboardView({
     return dataToAdd;
   };
 
-  const handleDelete = async (businessId: string) => {
-    console.log("HandleDelete");
-    // try {
-    //   const addResponse = await handleDeleteBusiness(
-    //     CollectionType.Businesses,
-    //     businessId
-    //   );
-    //   if (addResponse) {
-    //     showSuccessToast("Business eliminato");
-    //     navigate(-1);
-    //   } else {
-    //     showErrorToast("Errore durante l'eliminazione");
-    //   }
-    // } catch (e) {
-    //   showErrorToast("Errore durante l'eliminazione");
-    // }
-  };
-
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentBusinesses = businesses.slice(startIndex, endIndex);
-
-  const removeHttpAndWww = (url: string) => {
-    return url.replace(/^(https?:\/\/)?(www\.)?/i, "").replace(/\/$/, "");
-  };
 
   const totalPages = Math.ceil(businesses.length / itemsPerPage);
   const pageRangeDisplayed = 5;
@@ -207,10 +188,10 @@ export function DashboardView({
       <HeaderComponent authRepository={authRepository} />
       <main className="mx-auto w-full px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between border-b border-gray-200 pb-6 pt-16">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+          <p className="text-4xl font-bold tracking-tight text-gray-900">
             Business
-          </h1>
-          <label className="flex items-center justify-center rounded-md border border-transparent bg-palette-dark hover:bg-palette-light px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:bg-palette-dark focus:ring-offset-2 cursor-pointer">
+          </p>
+          <label className="hidden sm:flex items-center justify-center rounded-md border border-transparent bg-palette-dark hover:bg-palette-light px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:bg-palette-dark focus:ring-offset-2 cursor-pointer">
             <ArrowUpOnSquareIcon className="h-5 w-5 mr-2" aria-hidden="true" />
             <input
               type="file"
@@ -222,61 +203,17 @@ export function DashboardView({
             Upload JSON
           </label>
         </div>
-        <table className="min-w-full divide-y divide-gray-100">
-          <tbody>
-            {currentBusinesses.map((business) => (
-              <tr
-                key={business.id}
-                className="cursor-pointer transition-all duration-300 hover:bg-palette-lighter"
-                onClick={() => navigateToBusiness(business.id)}
-              >
-                <td className="py-4 px-4 text-left">
-                  <p className="text-sm font-semibold leading-6 text-gray-900">
-                    {business.name}
-                  </p>
-                  <span className="inline-flex items-center rounded-md bg-purple-50 px-2 py-1 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10">
-                    {business.street}, {business.city}
-                  </span>
-                </td>
-                <td className="py-4 px-4 text-left">
-                  <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-700 ring-1 ring-inset ring-purple-700/10">
-                    {business.category}
-                  </span>
-                </td>
-                <td className="py-4 px-4 text-left hidden sm:table-cell">
-                  <p className="text-sm leading-6 text-gray-900">
-                    {business.reviews} reviews
-                  </p>
-                  <p className="text-sm leading-6 text-gray-900">
-                    {business.score} stars
-                  </p>
-                </td>
-                <td className="py-4 px-4 text-right hidden sm:table-cell">
-                  <p className="text-sm leading-6 text-gray-900">
-                    {business.phone}
-                  </p>
-                  <span
-                    className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
-                      business.website === "Non disponibile"
-                        ? "bg-red-50 text-red-700 ring-red-600/10"
-                        : "bg-green-50 text-green-700 ring-green-600/20"
-                    }`}
-                  >
-                    {business.website !== "Non disponibile"
-                      ? removeHttpAndWww(business.website)
-                      : business.website}
-                  </span>
-                </td>
-                <td className="py-4 pl-6 text-right">
-                  <ChevronRightIcon
-                    className="h-5 w-5 text-palette-primary"
-                    aria-hidden="true"
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {isMobile ? (
+          <MobileTableComponent
+            businesses={currentBusinesses}
+            navigateToBusiness={navigateToBusiness}
+          />
+        ) : (
+          <DesktopTableComponent
+            businesses={currentBusinesses}
+            navigateToBusiness={navigateToBusiness}
+          />
+        )}
 
         <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
           <div className="flex flex-1 justify-between sm:hidden">
