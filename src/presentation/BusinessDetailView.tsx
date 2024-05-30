@@ -14,6 +14,7 @@ import { APIProvider, AdvancedMarker, Map } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
 import { useBusinessModelController } from "./hooks/useBusinessModelController";
 import { showErrorToast, showSuccessToast } from "../utils/toastUtils";
+import { CollectionType } from "../data/datasource/BusinessDataSourceImpl";
 
 export function BusinessDetailView({
   authRepository,
@@ -25,7 +26,6 @@ export function BusinessDetailView({
   const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
   const mapId = process.env.REACT_APP_GOOGLE_MAPS_ID_KEY;
   const navigate = useNavigate();
-
   const location = useLocation();
   const businessId: string = location.state;
   const [business, setBusiness] = useState<Business>();
@@ -38,8 +38,10 @@ export function BusinessDetailView({
   useEffect(() => {
     async function fetchBusiness() {
       try {
-        const business = await handleGetBusinessById(businessId);
-        console.log(business);
+        const business = await handleGetBusinessById(
+          CollectionType.Businesses,
+          businessId
+        );
 
         if (business) {
           setBusiness(business);
@@ -71,6 +73,7 @@ export function BusinessDetailView({
   ) => {
     try {
       const updateResponse = await handleUpdateBusiness(
+        CollectionType.Businesses,
         businessId,
         updatedBusiness as Business
       );
@@ -108,7 +111,10 @@ export function BusinessDetailView({
 
   const handleDelete = async () => {
     try {
-      const addResponse = await handleDeleteBusiness(businessId);
+      const addResponse = await handleDeleteBusiness(
+        CollectionType.Businesses,
+        businessId
+      );
       if (addResponse) {
         showSuccessToast("Business eliminato");
         navigate(-1);

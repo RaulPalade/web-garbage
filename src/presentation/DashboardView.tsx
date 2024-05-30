@@ -5,6 +5,7 @@ import {
   ChevronRightIcon,
   ChevronLeftIcon,
   ArrowUpOnSquareIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +13,7 @@ import { useBusinessModelController } from "./hooks/useBusinessModelController";
 import { BusinessRepository } from "../domain/repository/BusinessRepository";
 import { Business, NewBusiness } from "../domain/models";
 import { showErrorToast, showSuccessToast } from "../utils/toastUtils";
+import { CollectionType } from "../data/datasource/BusinessDataSourceImpl";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -32,7 +34,7 @@ export function DashboardView({
   const itemsPerPage = 8;
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const { handleGetAllBusinesses, handleAddBusinesses } =
+  const { handleGetAllDocuments, handleAddBusinesses, handleDeleteBusiness } =
     useBusinessModelController(businessRepository);
 
   useEffect(() => {
@@ -40,8 +42,7 @@ export function DashboardView({
   }, [currentPage]);
 
   const loadBusinesses = async () => {
-    const businesses = await handleGetAllBusinesses();
-    console.log(businesses);
+    const businesses = await handleGetAllDocuments(CollectionType.Businesses);
     setBusinesses(businesses);
   };
 
@@ -59,7 +60,10 @@ export function DashboardView({
 
       try {
         setLoading(true);
-        const addResponse = await handleAddBusinesses(dataToAdd);
+        const addResponse = await handleAddBusinesses(
+          CollectionType.Businesses,
+          dataToAdd
+        );
         if (addResponse) {
           showSuccessToast("File caricato");
           loadBusinesses();
@@ -99,7 +103,6 @@ export function DashboardView({
     const dataToAdd: NewBusiness[] = [];
 
     jsonData.forEach((item: any) => {
-      console.log(item["reviewsCount"] || "Non disponibile");
       const newBusiness: NewBusiness = {
         name: item["title"] || "Non disponibile",
         street: item["street"] || "Non disponibile",
@@ -127,6 +130,24 @@ export function DashboardView({
     });
 
     return dataToAdd;
+  };
+
+  const handleDelete = async (businessId: string) => {
+    console.log("HandleDelete");
+    // try {
+    //   const addResponse = await handleDeleteBusiness(
+    //     CollectionType.Businesses,
+    //     businessId
+    //   );
+    //   if (addResponse) {
+    //     showSuccessToast("Business eliminato");
+    //     navigate(-1);
+    //   } else {
+    //     showErrorToast("Errore durante l'eliminazione");
+    //   }
+    // } catch (e) {
+    //   showErrorToast("Errore durante l'eliminazione");
+    // }
   };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -202,42 +223,55 @@ export function DashboardView({
             Upload JSON
           </label>
         </div>
-        <ul className="divide-y divide-gray-100">
-          {currentBusinesses.map((business) => (
-            <li
-              key={business.id}
-              className="flex justify-between gap-x-6 py-4 px-4 cursor-pointer transition-all duration-300 hover:bg-palette-lighter"
-              onClick={() => navigateToBusiness(business.id)}
-            >
-              <div className="flex min-w-0 gap-x-4">
-                <div className="min-w-0 flex-auto">
+        <table className="min-w-full divide-y divide-gray-100">
+          <tbody>
+            {currentBusinesses.map((business) => (
+              <tr
+                key={business.id}
+                className="cursor-pointer transition-all duration-300 hover:bg-palette-lighter"
+                onClick={() => navigateToBusiness(business.id)}
+              >
+                <td className="py-4 px-4 text-left">
                   <p className="text-sm font-semibold leading-6 text-gray-900">
                     {business.name}
                   </p>
                   <span className="inline-flex items-center rounded-md bg-purple-50 px-2 py-1 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10">
+                    {business.street}, {business.city}
+                  </span>
+                </td>
+                <td className="py-4 px-4 text-left">
+                  <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-700 ring-1 ring-inset ring-purple-700/10">
                     {business.category}
                   </span>
-                </div>
-              </div>
-              <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-                <p className="text-sm leading-6 text-gray-900">
-                  {business.street}, {business.city}
-                </p>
-                <span
-                  className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
-                    business.website === "Non disponibile"
-                      ? "bg-red-50 text-red-700 ring-red-600/10"
-                      : "bg-green-50 text-green-700 ring-green-600/20"
-                  }`}
-                >
-                  {business.website !== "Non disponibile"
-                    ? removeHttpAndWww(business.website)
-                    : business.website}
-                </span>
-              </div>
-            </li>
-          ))}
-        </ul>
+                </td>
+                <td className="py-4 px-4 text-left hidden sm:table-cell">
+                  <p className="text-sm leading-6 text-gray-900">
+                    {business.reviews} reviews
+                  </p>
+                  <p className="text-sm leading-6 text-gray-900">
+                    {business.score} stars
+                  </p>
+                </td>
+                <td className="py-4 px-4 text-right hidden sm:table-cell">
+                  <p className="text-sm leading-6 text-gray-900">
+                    {business.phone}
+                  </p>
+                  <span
+                    className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
+                      business.website === "Non disponibile"
+                        ? "bg-red-50 text-red-700 ring-red-600/10"
+                        : "bg-green-50 text-green-700 ring-green-600/20"
+                    }`}
+                  >
+                    {business.website !== "Non disponibile"
+                      ? removeHttpAndWww(business.website)
+                      : business.website}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
         <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
           <div className="flex flex-1 justify-between sm:hidden">

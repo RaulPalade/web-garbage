@@ -4,6 +4,7 @@ import { Success, Failure } from "../../domain/models/Result";
 import { BusinessRepository } from "../../domain/repository/BusinessRepository";
 import { BusinessDataSource } from "../datasource/BusinessDataSource";
 import { ResponseSuccess } from "../models/ApiResponse";
+import { CollectionType } from "../datasource/BusinessDataSourceImpl";
 
 export class BusinessRepositoryImpl implements BusinessRepository {
   dataSource: BusinessDataSource;
@@ -11,12 +12,18 @@ export class BusinessRepositoryImpl implements BusinessRepository {
     this.dataSource = dataSource;
   }
 
-  async getAllBusinesses(): Promise<Result<Business[]>> {
-    const businesses: Business[] = [];
-    const businessesResponse = await this.dataSource.getAllBusinesses();
-    if (businessesResponse instanceof ResponseSuccess) {
+  async getAllDocuments(
+    collectionType: CollectionType
+  ): Promise<Result<Business[]>> {
+    const documents: Business[] = [];
+    const documentsResponse = await this.dataSource.getAllDocuments(
+      collectionType
+    );
+
+    if (documentsResponse instanceof ResponseSuccess) {
       const snapshot: QueryDocumentSnapshot<DocumentData, DocumentData>[] =
-        businessesResponse.value;
+        documentsResponse.value;
+
       snapshot.forEach((doc) => {
         const businessData = doc.data();
         const business: Business = {
@@ -33,39 +40,75 @@ export class BusinessRepositoryImpl implements BusinessRepository {
           notes: businessData.notes,
           contacted: businessData.contacted,
         };
-        businesses.push(business);
+        documents.push(business);
       });
-      return new Success(businesses);
+
+      // Regex pattern to check for valid URLs
+      const urlPattern = new RegExp(
+        "^(https?:\\/\\/)?" + // protocol
+          "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|" + // domain name
+          "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+          "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+          "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+          "(\\#[-a-z\\d_]*)?$",
+        "i" // fragment locator
+      );
+
+      // Sort the documents by the website field, placing valid URLs at the top
+      documents.sort((a, b) => {
+        const aValid = urlPattern.test(a.website);
+        const bValid = urlPattern.test(b.website);
+
+        if (aValid && !bValid) {
+          return -1;
+        } else if (!aValid && bValid) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+
+      return new Success(documents);
     } else {
-      const error: string = (businessesResponse as Failure<string>).error;
+      const error: string = (documentsResponse as Failure<string>).error;
       return new Response(error);
     }
   }
 
-  async getBusinessById(businessId: string): Promise<Result<Business>> {
-    const businessResponse = await this.dataSource.getBusinessById(businessId);
-    if (businessResponse instanceof ResponseSuccess) {
-      return new Success(businessResponse.value);
+  async getDocumentById(
+    collectionType: CollectionType,
+    businessId: string
+  ): Promise<Result<Business>> {
+    const documentsResponse = await this.dataSource.getDocumentById(
+      collectionType,
+      businessId
+    );
+    if (documentsResponse instanceof ResponseSuccess) {
+      return new Success(documentsResponse.value);
     } else {
-      const error: string = (businessResponse as Failure<string>).error;
+      const error: string = (documentsResponse as Failure<string>).error;
       return new Failure(error);
     }
   }
 
-  async addBusinesses(businesses: NewBusiness[]): Promise<Result<boolean>> {
+  async addDocuments(
+    collectionType: CollectionType,
+    businesses: NewBusiness[]
+  ): Promise<Result<boolean>> {
     try {
       const promises: Promise<Result<boolean>>[] = [];
       for (const business of businesses) {
         promises.push(
           new Promise<Result<boolean>>(async (resolve, reject) => {
             try {
-              const businessResponse = await this.dataSource.addBusiness(
+              const documentsResponse = await this.dataSource.addDocument(
+                collectionType,
                 business
               );
-              if (businessResponse instanceof ResponseSuccess) {
+              if (documentsResponse instanceof ResponseSuccess) {
                 resolve(new Success(true));
               } else {
-                const error: string = (businessResponse as Failure<string>)
+                const error: string = (documentsResponse as Failure<string>)
                   .error;
                 reject(
                   new Failure(
@@ -95,8 +138,14 @@ export class BusinessRepositoryImpl implements BusinessRepository {
     }
   }
 
-  async deleteBusiness(businessId: string): Promise<Result<boolean>> {
-    const deleteResponse = await this.dataSource.deleteBusiness(businessId);
+  async deleteDocument(
+    collectionType: CollectionType,
+    businessId: string
+  ): Promise<Result<boolean>> {
+    const deleteResponse = await this.dataSource.deleteDocument(
+      collectionType,
+      businessId
+    );
     if (deleteResponse instanceof ResponseSuccess) {
       return new Success(true);
     } else {
@@ -105,11 +154,13 @@ export class BusinessRepositoryImpl implements BusinessRepository {
     }
   }
 
-  async updateBusiness(
+  async updateDocument(
+    collectionType: CollectionType,
     businessId: string,
     business: NewBusiness
   ): Promise<Result<boolean>> {
-    const updateResponse = await this.dataSource.updateBusiness(
+    const updateResponse = await this.dataSource.updateDocument(
+      collectionType,
       businessId,
       business
     );

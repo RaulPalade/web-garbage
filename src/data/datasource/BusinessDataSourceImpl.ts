@@ -7,6 +7,7 @@ import {
 import { BusinessDataSource } from "./BusinessDataSource";
 import { db } from "../../firebase.config";
 import {
+  CollectionReference,
   DocumentData,
   QueryDocumentSnapshot,
   QuerySnapshot,
@@ -22,29 +23,53 @@ import {
 } from "firebase/firestore";
 import { Business } from "../../domain/models";
 
-export class BusinessDataSourceImpl implements BusinessDataSource {
-  businessesRef = collection(db, "businesses");
-  cachedBusinesses: QueryDocumentSnapshot<DocumentData, DocumentData>[] | null =
-    null;
+export enum CollectionType {
+  Clients = "clients",
+  Businesses = "businesses",
+}
 
-  async getAllBusinesses(): Promise<
-    ApiResponse<QuerySnapshot<DocumentData, DocumentData>>
-  > {
+export interface CollectionData {
+  ref: CollectionReference<DocumentData>;
+  cachedData: QueryDocumentSnapshot<DocumentData, DocumentData>[] | null;
+}
+
+const collectionMap: Record<CollectionType, CollectionData> = {
+  [CollectionType.Clients]: {
+    ref: collection(db, CollectionType.Clients),
+    cachedData: null,
+  },
+  [CollectionType.Businesses]: {
+    ref: collection(db, CollectionType.Businesses),
+    cachedData: null,
+  },
+};
+
+export class BusinessDataSourceImpl implements BusinessDataSource {
+  async getAllDocuments(
+    collectionType: CollectionType
+  ): Promise<ApiResponse<QuerySnapshot<DocumentData, DocumentData>>> {
+    const collectionData = collectionMap[collectionType];
+
     try {
-      if (this.cachedBusinesses != null) {
-        return new ResponseSuccess(this.cachedBusinesses);
+      if (collectionData.cachedData != null) {
+        return new ResponseSuccess(collectionData.cachedData);
       }
-      const businessesSnapshot = await getDocs(this.businessesRef);
-      this.cachedBusinesses = businessesSnapshot.docs;
-      return new ResponseSuccess(businessesSnapshot);
+      const snapshot = await getDocs(collectionData.ref);
+      collectionData.cachedData = snapshot.docs;
+      return new ResponseSuccess(snapshot);
     } catch (e) {
       return new ResponseFailure("Something went wrong");
     }
   }
 
-  async getBusinessById(businessId: string): Promise<ApiResponse<Business>> {
+  async getDocumentById(
+    collectionType: CollectionType,
+    documentId: string
+  ): Promise<ApiResponse<Business>> {
+    const collectionData = collectionMap[collectionType];
+
     try {
-      const businessDoc = await getDoc(doc(this.businessesRef, businessId));
+      const businessDoc = await getDoc(doc(collectionData.ref, documentId));
       if (businessDoc.exists()) {
         const businessData = businessDoc.data();
         return new ResponseSuccess(businessData as Business);
@@ -57,18 +82,35 @@ export class BusinessDataSourceImpl implements BusinessDataSource {
     }
   }
 
-  async addBusiness(business: NewBusiness): Promise<ApiResponse<boolean>> {
+  async addDocument(
+    collectionType: CollectionType,
+    document: NewBusiness
+  ): Promise<ApiResponse<boolean>> {
+    const collectionData = collectionMap[collectionType];
+
     try {
-      const docRef = await addDoc(this.businessesRef, business);
+      const docRef = await addDoc(collectionData.ref, document);
       return new ResponseSuccess(docRef);
     } catch (e) {
       return new ResponseFailure("Something went wrong");
     }
   }
 
-  async deleteBusiness(businessId: string): Promise<ApiResponse<boolean>> {
+  async deleteDocument(
+    collectionType: CollectionType,
+    documentId: string
+  ): Promise<ApiResponse<boolean>> {
+    const collectionData = collectionMap[collectionType];
+
     try {
-      await deleteDoc(doc(this.businessesRef, businessId));
+      await deleteDoc(doc(collectionData.ref, documentId));
+
+      if (collectionData.cachedData) {
+        collectionData.cachedData = collectionData.cachedData.filter(
+          (doc) => doc.id !== documentId
+        );
+      }
+
       return new ResponseSuccess(true);
     } catch (error) {
       return new ResponseFailure(
@@ -77,24 +119,27 @@ export class BusinessDataSourceImpl implements BusinessDataSource {
     }
   }
 
-  async updateBusiness(
-    businessId: string,
-    business: NewBusiness
+  async updateDocument(
+    collectionType: CollectionType,
+    documentId: string,
+    document: NewBusiness
   ): Promise<ApiResponse<boolean>> {
+    const collectionData = collectionMap[collectionType];
+
     try {
-      const documentRef = doc(this.businessesRef, businessId);
-      await updateDoc(documentRef, business);
-      const q = query(this.businessesRef, where("__name__", "==", businessId));
+      const documentRef = doc(collectionData.ref, documentId);
+      await updateDoc(documentRef, document);
+      const q = query(collectionData.ref, where("__name__", "==", documentId));
       const querySnapshot = await getDocs(q);
 
-      if (this.cachedBusinesses) {
-        const index = this.cachedBusinesses.findIndex(
-          (item) => item.id === businessId
+      if (collectionData.cachedData) {
+        const index = collectionData.cachedData.findIndex(
+          (item) => item.id === documentId
         );
         if (index !== -1) {
-          this.cachedBusinesses[index] = querySnapshot.docs[0];
+          collectionData.cachedData[index] = querySnapshot.docs[0];
         } else {
-          this.cachedBusinesses?.push(...querySnapshot.docs);
+          collectionData.cachedData?.push(...querySnapshot.docs);
         }
       }
 
