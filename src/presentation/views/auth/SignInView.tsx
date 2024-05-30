@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthRepository } from "../../../domain/repository/AuthRepository";
 import { useAuthModelController } from "../../hooks/useAuthModelController";
+import { useAuthStatus } from "../../hooks/useAuthStatus";
 import ForgotPasswordFormComponent from "../../components/forms/ForgotPasswordFormComponent";
 import SignInForm, {
   SignInFormData,
@@ -10,7 +11,6 @@ import { FooterComponent } from "../../components/headers/FooterComponent";
 import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
 import { CircularLoaderComponent } from "../../components/loaders/CircularLoaderComponent";
 import generalAnimation from "../../../assets/lotties/generalAnimation.json";
-import { useAuthStatus } from "../../hooks/useAuthStatus";
 
 export function SignInView({
   authRepository,
