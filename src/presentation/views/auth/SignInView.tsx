@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthRepository } from "../../../domain/repository/AuthRepository";
 import { useAuthModelController } from "../../hooks/useAuthModelController";
@@ -10,6 +10,7 @@ import { FooterComponent } from "../../components/headers/FooterComponent";
 import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
 import { CircularLoaderComponent } from "../../components/loaders/CircularLoaderComponent";
 import generalAnimation from "../../../assets/lotties/generalAnimation.json";
+import { useAuthStatus } from "../../hooks/useAuthStatus";
 
 export function SignInView({
   authRepository,
@@ -24,6 +25,9 @@ export function SignInView({
     password: "",
   });
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState<string>("");
+
+  const { loggedIn } = useAuthStatus();
+  const [showLoggedMessage, setShowLoggedMessage] = useState<boolean>(false);
 
   const handleFormDataChange = (formData: SignInFormData) => {
     setFormData(formData);
@@ -76,7 +80,23 @@ export function SignInView({
     }
   };
 
-  return loginSuccess ? (
+  useEffect(() => {
+    if (loggedIn) {
+      setShowLoggedMessage(true);
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    }
+  }, [loggedIn, navigate]);
+
+  return showLoggedMessage ? (
+    <div className="flex items-center justify-center h-screen">
+      <CircularLoaderComponent
+        animation={generalAnimation}
+        message={"Utente già loggato"}
+      />
+    </div>
+  ) : loginSuccess ? (
     <div className="flex items-center justify-center h-screen">
       <CircularLoaderComponent
         animation={generalAnimation}
