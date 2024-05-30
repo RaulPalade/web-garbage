@@ -187,7 +187,7 @@ export function DashboardView({
     <div className="w-full min-h-full">
       <HeaderComponent authRepository={authRepository} />
       <main className="mx-auto w-full px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between border-b border-gray-200 pb-6 pt-16">
+        <div className="flex justify-between border-b border-gray-200 pb-6 pt-10">
           <p className="text-4xl font-bold tracking-tight text-gray-900">
             Business
           </p>
