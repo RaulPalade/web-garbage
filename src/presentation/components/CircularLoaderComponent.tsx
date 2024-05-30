@@ -1,8 +1,19 @@
-export function CircularLoaderComponent() {
+import Lottie from "react-lottie";
+
+export function CircularLoaderComponent({ animation }: { animation: any }) {
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animation,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
   return (
-    <div
-      className="inline-block h-12 w-12 mr-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent text-neutral-100 motion-reduce:animate-[spin_1.5s_linear_infinite]"
-      role="status"
-    ></div>
+    <div className="flex flex-col space-y-6 items-center p-10">
+      <Lottie options={defaultOptions} height={400} width={400} />
+      <p className="text-palette-primary">Caricamento in corso...</p>
+    </div>
   );
 }

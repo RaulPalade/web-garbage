@@ -71,7 +71,7 @@ export class BusinessRepositoryImpl implements BusinessRepository {
       return new Success(documents);
     } else {
       const error: string = (documentsResponse as Failure<string>).error;
-      return new Response(error);
+      return new Failure(error);
     }
   }
 

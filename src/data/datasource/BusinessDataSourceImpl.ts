@@ -90,6 +90,26 @@ export class BusinessDataSourceImpl implements BusinessDataSource {
 
     try {
       const docRef = await addDoc(collectionData.ref, document);
+
+      // Simula un oggetto QueryDocumentSnapshot
+      const simulatedDoc: Partial<
+        QueryDocumentSnapshot<DocumentData, DocumentData>
+      > = {
+        id: docRef.id,
+        data: () => document,
+      };
+
+      // Aggiorna la cache con il nuovo documento aggiunto
+      if (collectionData.cachedData) {
+        collectionData.cachedData.push(
+          simulatedDoc as QueryDocumentSnapshot<DocumentData, DocumentData>
+        );
+      } else {
+        collectionData.cachedData = [
+          simulatedDoc as QueryDocumentSnapshot<DocumentData, DocumentData>,
+        ];
+      }
+
       return new ResponseSuccess(docRef);
     } catch (e) {
       return new ResponseFailure("Something went wrong");

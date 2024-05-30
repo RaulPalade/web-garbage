@@ -16,6 +16,8 @@ import { CollectionType } from "../data/datasource/BusinessDataSourceImpl";
 import { DesktopTableComponent } from "./components/DesktopTableComponent";
 import { MobileTableComponent } from "./components/MobileTabelComponent";
 import { useMediaQuery } from "@react-hook/media-query";
+import { LoaderView } from "./components/LoaderView";
+import jsonLoadAnimation from "../assets/lotties/loadingJson.json";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -41,7 +43,7 @@ export function DashboardView({
 
   useEffect(() => {
     loadBusinesses();
-  }, [currentPage]);
+  }, []);
 
   const loadBusinesses = async () => {
     const businesses = await handleGetAllDocuments(CollectionType.Businesses);
@@ -191,6 +193,13 @@ export function DashboardView({
           <p className="text-4xl font-bold tracking-tight text-gray-900">
             Business
           </p>
+          <button
+            onClick={loadBusinesses}
+            className="hidden sm:flex items-center justify-center rounded-md border border-transparent bg-palette-dark hover:bg-palette-light px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:bg-palette-dark focus:ring-offset-2 cursor-pointer"
+          >
+            <ArrowUpOnSquareIcon className="h-5 w-5 mr-2" aria-hidden="true" />
+            Reload
+          </button>
           <label className="hidden sm:flex items-center justify-center rounded-md border border-transparent bg-palette-dark hover:bg-palette-light px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:bg-palette-dark focus:ring-offset-2 cursor-pointer">
             <ArrowUpOnSquareIcon className="h-5 w-5 mr-2" aria-hidden="true" />
             <input
@@ -279,6 +288,11 @@ export function DashboardView({
         </div>
       </main>
       <FooterComponent />
+      <LoaderView
+        animation={jsonLoadAnimation}
+        open={loading}
+        onClose={() => console.log("Loading done...")}
+      />
     </div>
   );
 }
