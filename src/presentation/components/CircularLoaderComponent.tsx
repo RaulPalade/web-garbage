@@ -1,6 +1,12 @@
 import Lottie from "react-lottie";
 
-export function CircularLoaderComponent({ animation }: { animation: any }) {
+export function CircularLoaderComponent({
+  animation,
+  message,
+}: {
+  animation: any;
+  message: string;
+}) {
   const defaultOptions = {
     loop: true,
     autoplay: true,
@@ -13,7 +19,7 @@ export function CircularLoaderComponent({ animation }: { animation: any }) {
   return (
     <div className="flex flex-col space-y-6 items-center p-10">
       <Lottie options={defaultOptions} height={400} width={400} />
-      <p className="text-palette-primary">Caricamento in corso...</p>
+      <p className="text-2xl font-bold text-palette-primary">{message}</p>
     </div>
   );
 }

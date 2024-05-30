@@ -10,6 +10,7 @@ export function PrivateRoute() {
     return (
       <LoaderView
         animation={generalAnimation}
+        message={"Caricamento in corso..."}
         open={false}
         onClose={() => console.log("CIAOOO")}
       />

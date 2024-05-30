@@ -8,13 +8,14 @@ import { CollectionType } from "../../../data/datasource/BusinessDataSourceImpl"
 import { HeaderComponent } from "../../components/HeaderComponent";
 import { FooterComponent } from "../../components/FooterComponent";
 import { LoaderView } from "../../components/LoaderView";
-import { showErrorToast, showSuccessToast } from "../../../utils/toastUtils";
 import { ArrowUpOnSquareIcon } from "@heroicons/react/24/outline";
 import { useBusinessModelController } from "../../hooks/useBusinessModelController";
 import { DesktopTableComponent } from "../../components/DesktopTableComponent";
 import { MobileTableComponent } from "../../components/MobileTabelComponent";
-import jsonLoadAnimation from "../../../assets/lotties/loadingJson.json";
 import { PaginationComponent } from "../../components/PaginationComponent";
+import jsonLoadAnimation from "../../../assets/lotties/loadingJson.json";
+import onSuccessAnimation from "../../../assets/lotties/success.json";
+import onFailureAnimation from "../../../assets/lotties/error.json";
 
 export function DashboardView({
   authRepository,
@@ -29,6 +30,11 @@ export function DashboardView({
   const itemsPerPage = 8;
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState<boolean>(false);
+  const [currentAnimation, setCurrentAnimation] =
+    useState<any>(jsonLoadAnimation);
+  const [animationMessage, setAnimationMessage] = useState<string>(
+    "Caricamento in corso..."
+  );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const { handleGetAllDocuments, handleAddBusinesses } =
@@ -62,15 +68,24 @@ export function DashboardView({
           dataToAdd
         );
         if (addResponse) {
-          showSuccessToast("File caricato");
+          setCurrentAnimation(onSuccessAnimation);
+          setAnimationMessage("Caricamento completato");
           loadBusinesses();
         } else {
-          showErrorToast("Errore durante il caricamento del file");
+          setCurrentAnimation(onFailureAnimation);
+          setAnimationMessage("Errore durante il caricamento");
         }
-        setLoading(false);
       } catch (e) {
-        setLoading(false);
-        showErrorToast("Errore durante il caricamento del file");
+        setCurrentAnimation(onFailureAnimation);
+        setAnimationMessage("Errore durante il caricamento");
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+          setTimeout(() => {
+            setCurrentAnimation(jsonLoadAnimation);
+            setAnimationMessage("Caricamento in corso...");
+          }, 1000);
+        }, 2000);
       }
       fileInput.value = "";
     }
@@ -175,7 +190,8 @@ export function DashboardView({
       </main>
       <FooterComponent />
       <LoaderView
-        animation={jsonLoadAnimation}
+        animation={currentAnimation}
+        message={animationMessage}
         open={loading}
         onClose={() => console.log("Loading done...")}
       />
