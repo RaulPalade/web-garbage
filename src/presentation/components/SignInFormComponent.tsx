@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logo from "../../images/garbage.svg";
+import logo from "../../assets/images/garbage.svg";
 
 export interface SignInFormData {
   email: string;

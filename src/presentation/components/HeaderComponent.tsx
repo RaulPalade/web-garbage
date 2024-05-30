@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthRepository } from "../../domain/repository/AuthRepository";
 import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
 import { useAuthModelController } from "../hooks/useAuthModelController";
-import logo from "../../images/garbage.svg";
+import logo from "../../assets/images/garbage.svg";
 
 const navigation = {
   pages: [
