@@ -5,7 +5,6 @@ import {
   ChevronRightIcon,
   ChevronLeftIcon,
   ArrowUpOnSquareIcon,
-  TrashIcon,
 } from "@heroicons/react/24/outline";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -267,6 +266,12 @@ export function DashboardView({
                       ? removeHttpAndWww(business.website)
                       : business.website}
                   </span>
+                </td>
+                <td className="py-4 pl-6 text-right">
+                  <ChevronRightIcon
+                    className="h-5 w-5 text-palette-primary"
+                    aria-hidden="true"
+                  />
                 </td>
               </tr>
             ))}
