@@ -2,8 +2,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { AuthRepository } from "../../../domain/repository";
 import { BusinessRepository } from "../../../domain/repository/BusinessRepository";
 import { Business } from "../../../domain/models";
-import { FooterComponent } from "../../components/FooterComponent";
-import { HeaderComponent } from "../../components/HeaderComponent";
+import { FooterComponent } from "../../components/headers/FooterComponent";
+import { HeaderComponent } from "../../components/headers/HeaderComponent";
 import { PencilSquareIcon, StarIcon } from "@heroicons/react/24/outline";
 import { APIProvider, AdvancedMarker, Map } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
@@ -11,9 +11,9 @@ import { useBusinessModelController } from "../../hooks/useBusinessModelControll
 import { showErrorToast, showSuccessToast } from "../../../utils/toastUtils";
 import { CollectionType } from "../../../data/datasource/BusinessDataSourceImpl";
 import { useMediaQuery } from "@react-hook/media-query";
-import { DesktopBusinessDetailHeader } from "../../components/DesktopBusinessDetailHeader";
-import { MobileBusinessDetailHeader } from "../../components/MobileBusinessDetailHeader";
-import { CircularLoaderComponent } from "../../components/CircularLoaderComponent";
+import { DesktopBusinessDetailHeader } from "../../components/headers/DesktopBusinessDetailHeader";
+import { MobileBusinessDetailHeader } from "../../components/headers/MobileBusinessDetailHeader";
+import { CircularLoaderComponent } from "../../components/loaders/CircularLoaderComponent";
 import generalAnimation from "../../../assets/lotties/generalAnimation.json";
 
 export function BusinessDetailView({

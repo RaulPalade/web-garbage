@@ -1,4 +1,4 @@
-import { Business } from "../../domain/models";
+import { Business } from "../../../domain/models";
 
 export function MobileTableComponent({
   businesses,

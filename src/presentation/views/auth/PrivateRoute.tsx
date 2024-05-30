@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuthStatus } from "../../hooks/useAuthStatus";
 import generalAnimation from "../../../assets/lotties/generalAnimation.json";
-import { CircularLoaderComponent } from "../../components/CircularLoaderComponent";
+import { CircularLoaderComponent } from "../../components/loaders/CircularLoaderComponent";
 
 export function PrivateRoute() {
   const { loggedIn, checkingStatus } = useAuthStatus();

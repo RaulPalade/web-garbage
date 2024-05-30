@@ -2,10 +2,10 @@ import { Fragment, useState } from "react";
 import { Dialog, Popover, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
-import { AuthRepository } from "../../domain/repository/AuthRepository";
-import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
-import { useAuthModelController } from "../hooks/useAuthModelController";
-import logo from "../../assets/images/garbage.svg";
+import { AuthRepository } from "../../../domain/repository/AuthRepository";
+import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
+import { useAuthModelController } from "../../hooks/useAuthModelController";
+import logo from "../../../assets/images/garbage.svg";
 
 const navigation = {
   pages: [

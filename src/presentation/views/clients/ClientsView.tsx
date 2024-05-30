@@ -5,10 +5,10 @@ import { CollectionType } from "../../../data/datasource/BusinessDataSourceImpl"
 import { Business } from "../../../domain/models";
 import { AuthRepository } from "../../../domain/repository";
 import { BusinessRepository } from "../../../domain/repository/BusinessRepository";
-import { DesktopTableComponent } from "../../components/DesktopTableComponent";
-import { FooterComponent } from "../../components/FooterComponent";
-import { HeaderComponent } from "../../components/HeaderComponent";
-import { MobileTableComponent } from "../../components/MobileTabelComponent";
+import { DesktopTableComponent } from "../../components/tables/DesktopTableComponent";
+import { FooterComponent } from "../../components/headers/FooterComponent";
+import { HeaderComponent } from "../../components/headers/HeaderComponent";
+import { MobileTableComponent } from "../../components/tables/MobileTabelComponent";
 import { PaginationComponent } from "../../components/PaginationComponent";
 import { useBusinessModelController } from "../../hooks/useBusinessModelController";
 

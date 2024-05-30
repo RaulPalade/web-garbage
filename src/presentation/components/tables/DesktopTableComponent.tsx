@@ -1,5 +1,5 @@
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
-import { Business } from "../../domain/models";
+import { Business } from "../../../domain/models";
 
 export function DesktopTableComponent({
   businesses,
