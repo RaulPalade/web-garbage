@@ -1,11 +1,13 @@
-import { AuthRepository } from "../../domain/repository/AuthRepository";
+import { AuthRepository } from "../../../domain/repository/AuthRepository";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
-import ForgotPasswordFormComponent from "../components/ForgotPasswordFormComponent";
-import SignInForm, { SignInFormData } from "../components/SignInFormComponent";
-import { useAuthModelController } from "../hooks/useAuthModelController";
-import { FooterComponent } from "../components/FooterComponent";
+import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
+import ForgotPasswordFormComponent from "../../components/ForgotPasswordFormComponent";
+import SignInForm, {
+  SignInFormData,
+} from "../../components/SignInFormComponent";
+import { useAuthModelController } from "../../hooks/useAuthModelController";
+import { FooterComponent } from "../../components/FooterComponent";
 
 export function SignInView({
   authRepository,

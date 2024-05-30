@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@react-hook/media-query";
-import { AuthRepository } from "../domain/repository/AuthRepository";
-import { BusinessRepository } from "../domain/repository/BusinessRepository";
-import { Business, NewBusiness } from "../domain/models";
-import { CollectionType } from "../data/datasource/BusinessDataSourceImpl";
-import { HeaderComponent } from "./components/HeaderComponent";
-import { FooterComponent } from "./components/FooterComponent";
-import { LoaderView } from "./components/LoaderView";
-import { showErrorToast, showSuccessToast } from "../utils/toastUtils";
+import { AuthRepository } from "../../../domain/repository/AuthRepository";
+import { BusinessRepository } from "../../../domain/repository/BusinessRepository";
+import { Business, NewBusiness } from "../../../domain/models";
+import { CollectionType } from "../../../data/datasource/BusinessDataSourceImpl";
+import { HeaderComponent } from "../../components/HeaderComponent";
+import { FooterComponent } from "../../components/FooterComponent";
+import { LoaderView } from "../../components/LoaderView";
+import { showErrorToast, showSuccessToast } from "../../../utils/toastUtils";
 import { ArrowUpOnSquareIcon } from "@heroicons/react/24/outline";
-import { useBusinessModelController } from "./hooks/useBusinessModelController";
-import { DesktopTableComponent } from "./components/DesktopTableComponent";
-import { MobileTableComponent } from "./components/MobileTabelComponent";
-import jsonLoadAnimation from "../assets/lotties/loadingJson.json";
-import { PaginationComponent } from "./components/PaginationComponent";
+import { useBusinessModelController } from "../../hooks/useBusinessModelController";
+import { DesktopTableComponent } from "../../components/DesktopTableComponent";
+import { MobileTableComponent } from "../../components/MobileTabelComponent";
+import jsonLoadAnimation from "../../../assets/lotties/loadingJson.json";
+import { PaginationComponent } from "../../components/PaginationComponent";
 
 export function DashboardView({
   authRepository,

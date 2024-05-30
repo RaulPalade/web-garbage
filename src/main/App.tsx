@@ -6,13 +6,15 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { AuthDataSourceImpl } from "../data/datasource/AuthDataSourceImpl";
 import { AuthRepositoryImpl } from "../data/repository/AuthRepositoryImpl";
-import { DashboardView } from "../presentation/DashboardView";
+import { DashboardView } from "../presentation/views/dashboard/DashboardView";
 import { NotFoundView } from "../presentation/NotFoundView";
-import { PrivateRoute } from "../presentation/auth/PrivateRoute";
-import { SignInView } from "../presentation/auth/SignInView";
+import { PrivateRoute } from "../presentation/views/auth/PrivateRoute";
+import { SignInView } from "../presentation/views/auth/SignInView";
 import { BusinessDataSourceImpl } from "../data/datasource/BusinessDataSourceImpl";
 import { BusinessRepositoryImpl } from "../data/repository/BusinessRepositoryImpl";
-import { BusinessDetailView } from "../presentation/BusinessDetailView";
+import { BusinessDetailView } from "../presentation/views/dashboard/BusinessDetailView";
+import { ClientsView } from "../presentation/views/clients/ClientsView";
+import { ClientDetailView } from "../presentation/views/clients/ClientDetailView";
 
 const authDataSource = new AuthDataSourceImpl();
 const authRepository = new AuthRepositoryImpl(authDataSource);
@@ -40,10 +42,30 @@ function App() {
               }
             />
           </Route>
+          <Route path="/clients" element={<PrivateRoute />}>
+            <Route
+              path="/clients"
+              element={
+                <ClientsView
+                  authRepository={authRepository}
+                  businessRepository={businessRepository}
+                />
+              }
+            />
+          </Route>
           <Route
             path="/businesses/:businessId"
             element={
               <BusinessDetailView
+                authRepository={authRepository}
+                businessRepository={businessRepository}
+              />
+            }
+          />
+          <Route
+            path="/clients/:clientId"
+            element={
+              <ClientDetailView
                 authRepository={authRepository}
                 businessRepository={businessRepository}
               />

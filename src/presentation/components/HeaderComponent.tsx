@@ -8,7 +8,10 @@ import { useAuthModelController } from "../hooks/useAuthModelController";
 import logo from "../../images/garbage.svg";
 
 const navigation = {
-  pages: [{ name: "Catalogo", href: "/" }],
+  pages: [
+    { name: "Catalogo", href: "/" },
+    { name: "Clients", href: "/clients" },
+  ],
 };
 
 export function HeaderComponent({
