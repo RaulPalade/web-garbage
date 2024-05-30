@@ -15,6 +15,9 @@ import { useEffect, useState } from "react";
 import { useBusinessModelController } from "./hooks/useBusinessModelController";
 import { showErrorToast, showSuccessToast } from "../utils/toastUtils";
 import { CollectionType } from "../data/datasource/BusinessDataSourceImpl";
+import { useMediaQuery } from "@react-hook/media-query";
+import { DesktopBusinessDetailHeader } from "./components/DesktopBusinessDetailHeader";
+import { MobileBusinessDetailHeader } from "./components/MobileBusinessDetailHeader";
 
 export function BusinessDetailView({
   authRepository,
@@ -23,6 +26,7 @@ export function BusinessDetailView({
   authRepository: AuthRepository;
   businessRepository: BusinessRepository;
 }) {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
   const mapId = process.env.REACT_APP_GOOGLE_MAPS_ID_KEY;
   const navigate = useNavigate();
@@ -130,45 +134,20 @@ export function BusinessDetailView({
     <div className="w-full min-h-full">
       <HeaderComponent authRepository={authRepository} />
       <div className="p-10">
-        <div className="flex justify-between px-4 sm:px-0">
-          <div className="flex space-x-4">
-            <button
-              type="button"
-              className="relative -m-2 inline-flex items-center justify-center rounded-md h-10 w-10 p-2 text-white bg-green-500 hover:bg-green-600 transition duration-200"
-              onClick={() => {}}
-            >
-              <span className="absolute -inset-0.5" />
-              <span className="sr-only">Conferma</span>
-              <CheckIcon className="h-6 w-6" aria-hidden="true" />
-            </button>
+        {isMobile ? (
+          <MobileBusinessDetailHeader
+            handleDelete={handleDelete}
+            business={business}
+            handleEditStatus={handleEditStatus}
+          />
+        ) : (
+          <DesktopBusinessDetailHeader
+            handleDelete={handleDelete}
+            business={business}
+            handleEditStatus={handleEditStatus}
+          />
+        )}
 
-            <button
-              type="button"
-              className="relative -m-2 inline-flex items-center justify-center rounded-md h-10 w-10 p-2 text-white bg-red-500 hover:bg-red-600 transition duration-200"
-              onClick={handleDelete}
-            >
-              <span className="absolute -inset-0.5" />
-              <span className="sr-only">Elimina</span>
-              <TrashIcon className="h-6 w-6" aria-hidden="true" />
-            </button>
-
-            <h3 className="text-xl font-bold leading-7 text-gray-900">
-              {business.name}
-            </h3>
-          </div>
-
-          <button onClick={handleEditStatus}>
-            <span
-              className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
-                business.contacted
-                  ? "bg-green-50 text-green-700 ring-green-600/10"
-                  : "bg-red-50 text-red-700 ring-red-600/10"
-              }`}
-            >
-              {business.contacted ? "Contattato" : "Non contattato"}
-            </span>
-          </button>
-        </div>
         <div className="mt-6 border-t border-gray-100">
           <dl className="divide-y divide-gray-100">
             <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
