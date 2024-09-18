@@ -11,7 +11,7 @@ import { DesktopTableComponent } from "../../components/tables/DesktopTableCompo
 import { FooterComponent } from "../../components/headers/FooterComponent";
 import { HeaderComponent } from "../../components/headers/HeaderComponent";
 import { MobileTableComponent } from "../../components/tables/MobileTabelComponent";
-import { PaginationComponent } from "../../components/PaginationComponent";
+import PaginationComponent from "../../components/PaginationComponent";
 
 export function ClientsView({
   authRepository,
@@ -62,6 +62,8 @@ export function ClientsView({
         <PaginationComponent
           currentPage={currentPage}
           totalPages={totalPages}
+          itemsPerPage={itemsPerPage}
+          totalItems={businesses.length}
           onPageChange={setCurrentPage}
         />
       </main>

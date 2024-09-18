@@ -13,10 +13,10 @@ import { LoaderView } from "../../components/loaders/LoaderView";
 import { ArrowUpOnSquareIcon } from "@heroicons/react/24/outline";
 import { DesktopTableComponent } from "../../components/tables/DesktopTableComponent";
 import { MobileTableComponent } from "../../components/tables/MobileTabelComponent";
-import { PaginationComponent } from "../../components/PaginationComponent";
 import jsonLoadAnimation from "../../../assets/lotties/loadingJson.json";
 import onSuccessAnimation from "../../../assets/lotties/success.json";
 import onFailureAnimation from "../../../assets/lotties/error.json";
+import PaginationComponent from "../../components/PaginationComponent";
 
 export function DashboardView({
   authRepository,
@@ -176,6 +176,8 @@ export function DashboardView({
         <PaginationComponent
           currentPage={currentPage}
           totalPages={totalPages}
+          itemsPerPage={itemsPerPage}
+          totalItems={businesses.length}
           onPageChange={setCurrentPage}
         />
       </main>
