@@ -2,10 +2,8 @@ import { Business } from "../../../domain/models";
 
 export function MobileTableComponent({
   businesses,
-  navigateToBusiness,
 }: {
   businesses: Business[];
-  navigateToBusiness: (value: string) => void;
 }) {
   const removeHttpAndWww = (url: string) => {
     return url.replace(/^(https?:\/\/)?(www\.)?/i, "").replace(/\/$/, "");
@@ -16,10 +14,17 @@ export function MobileTableComponent({
       {businesses.map((business) => (
         <li
           key={business.id}
-          className="flex justify-center gap-x-6 py-4 px-4 cursor-pointer transition-all duration-300 hover:bg-palette-lighter"
-          onClick={() => navigateToBusiness(business.id)}
+          className="relative flex justify-center gap-x-6 py-4 px-4 cursor-pointer transition-all duration-300 hover:bg-palette-lighter"
         >
-          <div className="flex flex-col justify-center items-center space-y-1">
+          <a
+            href={`/businesses/${business.id}`}
+            className="absolute inset-0 z-10"
+            onClick={(e) => e.stopPropagation()} // Per evitare conflitti con i link interni
+            aria-label={`View details of ${business.name}`}
+          ></a>
+
+          <div className="flex flex-col justify-center items-center space-y-1 z-20">
+            {/* Impostato z-index maggiore */}
             <p className="text-sm font-semibold leading-6 text-gray-900 text-left">
               {business.name}
             </p>
@@ -32,7 +37,7 @@ export function MobileTableComponent({
             <p className="text-sm leading-6 text-gray-900 text-right">
               <a
                 href={`tel:${business.phone}`}
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => e.stopPropagation()} // Impedisce che il click del telefono attivi il link dell'intera riga
               >
                 {business.phone}
               </a>

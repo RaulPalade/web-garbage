@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@react-hook/media-query";
 import { AuthRepository } from "../../../domain/repository";
 import {
@@ -22,7 +21,6 @@ export function ClientsView({
   businessRepository: BusinessRepository;
 }) {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const navigate = useNavigate();
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const itemsPerPage = 8;
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,10 +36,6 @@ export function ClientsView({
   const loadBusinesses = async () => {
     const businesses = await handleGetAllDocuments(CollectionType.Businesses);
     setBusinesses(businesses);
-  };
-
-  const navigateToBusiness = (businessId: string) => {
-    navigate(`/clients/${businessId}`, { state: businessId });
   };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -60,15 +54,9 @@ export function ClientsView({
           </p>
         </div>
         {isMobile ? (
-          <MobileTableComponent
-            businesses={currentBusinesses}
-            navigateToBusiness={navigateToBusiness}
-          />
+          <MobileTableComponent businesses={currentBusinesses} />
         ) : (
-          <DesktopTableComponent
-            businesses={currentBusinesses}
-            navigateToBusiness={navigateToBusiness}
-          />
+          <DesktopTableComponent businesses={currentBusinesses} />
         )}
 
         <PaginationComponent

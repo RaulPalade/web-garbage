@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { APIProvider, AdvancedMarker, Map } from "@vis.gl/react-google-maps";
 import { useMediaQuery } from "@react-hook/media-query";
 import { AuthRepository } from "../../../domain/repository";
@@ -29,8 +29,10 @@ export function BusinessDetailView({
   const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
   const mapId = process.env.REACT_APP_GOOGLE_MAPS_ID_KEY;
   const navigate = useNavigate();
-  const location = useLocation();
-  const businessId: string = location.state;
+
+  const { businessId } = useParams<{ businessId: string }>();
+  const validBusinessId = businessId || "defaultId";
+
   const [business, setBusiness] = useState<Business>();
   const [position, setPosition] = useState({ lat: 0, lng: 0 });
   const [addNote, setAddNote] = useState<boolean>(false);
@@ -44,7 +46,7 @@ export function BusinessDetailView({
       try {
         const business = await handleGetBusinessById(
           CollectionType.Businesses,
-          businessId
+          validBusinessId
         );
 
         if (business) {
@@ -82,7 +84,7 @@ export function BusinessDetailView({
     try {
       const updateResponse = await handleUpdateBusiness(
         CollectionType.Businesses,
-        businessId,
+        validBusinessId,
         updatedBusiness as Business
       );
       if (updateResponse) {
@@ -120,7 +122,7 @@ export function BusinessDetailView({
     try {
       const addResponse = await handleDeleteBusiness(
         CollectionType.Businesses,
-        businessId
+        validBusinessId
       );
       if (addResponse) {
         showSuccessToast("Business eliminato");

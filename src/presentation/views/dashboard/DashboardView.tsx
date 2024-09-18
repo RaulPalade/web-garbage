@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 import { useMediaQuery } from "@react-hook/media-query";
 import { AuthRepository } from "../../../domain/repository/AuthRepository";
 import {
@@ -27,7 +26,6 @@ export function DashboardView({
   businessRepository: BusinessRepository;
 }) {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const navigate = useNavigate();
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const itemsPerPage = 8;
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,10 +48,6 @@ export function DashboardView({
   const loadBusinesses = async () => {
     const businesses = await handleGetAllDocuments(CollectionType.Businesses);
     setBusinesses(businesses);
-  };
-
-  const navigateToBusiness = (businessId: string) => {
-    navigate(`/businesses/${businessId}`, { state: businessId });
   };
 
   const handleUploadJson = async () => {
@@ -174,15 +168,9 @@ export function DashboardView({
           </label>
         </div>
         {isMobile ? (
-          <MobileTableComponent
-            businesses={currentBusinesses}
-            navigateToBusiness={navigateToBusiness}
-          />
+          <MobileTableComponent businesses={currentBusinesses} />
         ) : (
-          <DesktopTableComponent
-            businesses={currentBusinesses}
-            navigateToBusiness={navigateToBusiness}
-          />
+          <DesktopTableComponent businesses={currentBusinesses} />
         )}
 
         <PaginationComponent

@@ -3,10 +3,8 @@ import { ChevronRightIcon } from "@heroicons/react/24/outline";
 
 export function DesktopTableComponent({
   businesses,
-  navigateToBusiness,
 }: {
   businesses: Business[];
-  navigateToBusiness: (value: string) => void;
 }) {
   const removeHttpAndWww = (url: string) => {
     return url.replace(/^(https?:\/\/)?(www\.)?/i, "").replace(/\/$/, "");
@@ -18,8 +16,7 @@ export function DesktopTableComponent({
         {businesses.map((business) => (
           <tr
             key={business.id}
-            className="cursor-pointer transition-all duration-300 hover:bg-palette-lighter"
-            onClick={() => navigateToBusiness(business.id)}
+            className="relative cursor-pointer transition-all duration-300 hover:bg-palette-lighter"
           >
             <td className="py-4 px-4 text-left">
               <p className="text-sm font-semibold leading-6 text-gray-900">
@@ -64,6 +61,12 @@ export function DesktopTableComponent({
                 aria-hidden="true"
               />
             </td>
+            {/* Elemento a sovrapposto che rende cliccabile l'intera riga */}
+            <a
+              href={`/businesses/${business.id}`}
+              className="absolute inset-0 z-10"
+              aria-label={`View details of ${business.name}`}
+            ></a>
           </tr>
         ))}
       </tbody>
