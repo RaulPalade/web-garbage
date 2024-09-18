@@ -12,11 +12,11 @@ import { FooterComponent } from "../../components/headers/FooterComponent";
 import { LoaderView } from "../../components/loaders/LoaderView";
 import { ArrowUpOnSquareIcon } from "@heroicons/react/24/outline";
 import { DesktopTableComponent } from "../../components/tables/DesktopTableComponent";
-import { MobileTableComponent } from "../../components/tables/MobileTabelComponent";
 import jsonLoadAnimation from "../../../assets/lotties/loadingJson.json";
 import onSuccessAnimation from "../../../assets/lotties/success.json";
 import onFailureAnimation from "../../../assets/lotties/error.json";
 import PaginationComponent from "../../components/PaginationComponent";
+import { MobileTableComponent } from "../../components/tables/MobileTabelComponent";
 
 export function DashboardView({
   authRepository,
@@ -28,7 +28,11 @@ export function DashboardView({
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const itemsPerPage = 8;
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(() => {
+    // Carica la pagina corrente da localStorage, se disponibile
+    const savedPage = localStorage.getItem("currentPage");
+    return savedPage ? parseInt(savedPage, 10) : 1;
+  });
   const [loading, setLoading] = useState<boolean>(false);
   const [currentAnimation, setCurrentAnimation] =
     useState<any>(jsonLoadAnimation);
@@ -147,6 +151,11 @@ export function DashboardView({
 
   const totalPages = Math.ceil(businesses.length / itemsPerPage);
 
+  useEffect(() => {
+    // Salva la pagina corrente in localStorage ogni volta che cambia
+    localStorage.setItem("currentPage", currentPage.toString());
+  }, [currentPage]);
+
   return (
     <div className="w-full min-h-full">
       <HeaderComponent authRepository={authRepository} />
@@ -178,7 +187,7 @@ export function DashboardView({
           totalPages={totalPages}
           itemsPerPage={itemsPerPage}
           totalItems={businesses.length}
-          onPageChange={setCurrentPage}
+          onPageChange={(page) => setCurrentPage(page)}
         />
       </main>
       <FooterComponent />
